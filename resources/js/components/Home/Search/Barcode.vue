@@ -1,17 +1,29 @@
 <template>
   <div ref="barcode" id="print">
-    <table>
+    <div  style="width:57mm">
+    <a-row type="flex" >
+      <a-col :span="6">{{this.tovarName}}</a-col>
+      <a-col><canvas id="barcode" style="width: 100px; height: 100px"></canvas></a-col>
+    </a-row>
+    <a-row type="flex">
+      <a-col :offset="6">{{this.code15}}</a-col>
+    </a-row>
+      <a-row type="flex">
+      <a-col :offset="6">{{this.code16}}</a-col>
+    </a-row>
+    </div>
+    <!-- <table>
       <tr valign="top">
         <td width="150px">{{this.tovarName}}</td>
         <td align="center" width="150px">
-          <canvas id="barcode" style="width: 100px; height: 100px"></canvas>
+          
         </td>
       </tr>
       <tr>
         <td width="150px"></td>
-        <td style="font-size:8pt;" width="150px">{{value.slice(0,30)}}</td>
+        <td style="font-size:8pt;" width="150px">{{this.code15}}<br>{{this.code16}}</td>
       </tr>
-    </table>
+    </table> -->
   </div>
 </template>
 
@@ -24,7 +36,9 @@ export default {
   props: ["value", "tovarName", "toPrint"],
   data: function() {
     return {
-      canvas: null
+      // canvas: null
+      code15: '',
+      code16: ''
     };
   },
   updated() {
@@ -37,14 +51,15 @@ export default {
     ...mapActions(["getBarcode"]),
 
     init() {
-      // this.canvas = document.createElement('canvas');
-      // this.canvas.id = "barcode";
-      // this.canvas.width = 200;
-      // this.canvas.height = 200;
-
-      // console.log("barcode is updated");
+      if(this.value == null || this.tovarName == null) 
+        return;
       this.generateBarcode(this.value);
       this.printBarcode();
+      this.setCode31();
+    },
+    setCode31() {
+      this.code15 = '(' +this.value.slice(0,2) + ')' + this.value.slice(2,15);
+      this.code16 = this.value.slice(15,31);
     },
 
     printBarcode() {
@@ -53,7 +68,11 @@ export default {
       printJS({
         printable: 'print',
         type: 'html',
-        // style: '@page { size: 50:47 landscape; }'
+        style: `@page {
+           size: Letter landscape;
+           size: 57mm 40mm;
+           margin: 0px; 
+          }`
       });
       // const windowPrint = window.open(
       //   "",
@@ -108,7 +127,7 @@ export default {
     },
 
     generateBarcode(value) {
-      this.canvas = bwipjs.toCanvas("barcode", {
+      bwipjs.toCanvas("barcode", {
         bcid: "gs1datamatrix",
         // text: '010290000005567421)0s/ZWOgw*rR291803992+a1NMJUigZLn90FzCjxqROBsUIK9Wl8SxGKQgCvPPI9ElQ0y0CHtNs//L23Nrv3vS6fFLq7XLDgJQUaUMaklMg==',
         // text: '\x1D01)0290000050693021ykkmFLVfyYsD&91002A92LPUFmj71fy38Fv4utf49Yz+tP8qSGFKuxxC8mBDwazx0wHaEdB5Yw0qaMldIERdS5/BctoGshmy9LwumSaz4ZQ==',
@@ -130,4 +149,5 @@ export default {
 </script>
 
 <style>
+
 </style>
