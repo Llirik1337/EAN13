@@ -53,7 +53,7 @@ export default {
       printJS({
         printable: 'print',
         type: 'html',
-        style: '@page { size: 50:47 landscape; }'
+        // style: '@page { size: 50:47 landscape; }'
       });
       // const windowPrint = window.open(
       //   "",
