@@ -8,8 +8,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
     <body>
+    <!-- {{ asset('js/app.js') }} -->
     <div id="app"></div>
-    <script> 
+    <script>
         var BASE_URL = '{{URL::to('/')}}';
     </script>
     <script src="{{ asset('js/app.js') }}"></script>

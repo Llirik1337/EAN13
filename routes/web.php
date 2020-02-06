@@ -22,7 +22,7 @@ Route::get('/{any?}', function () {
 
 Route::prefix('auth')->group(function () {
 
-    Route::get('init', 'AppController@init');
+    Route::post('init', 'AppController@init');
 
     Route::post('login', 'AppController@login');
     Route::post('logout', 'AppController@loguot');

@@ -72,8 +72,8 @@ export default {
           this.LoginIn(values)
             .then(
               result => {
-                // console.log(result);
-                // console.log("Login in ");
+                console.log(result);
+                console.log("Login in ");
                 if (this.getUser) {
                   this.$router.push("/Home");
                 }

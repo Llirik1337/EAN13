@@ -54,14 +54,37 @@ class CodedmController extends Controller
 
     public function add(Request $request)
     {
-        \Log::debug(__CLASS__ . "->" . __FUNCTION__);
-        \Log::debug($request->code);
-        \Log::debug($request->codeean13);
-        $codedm = Codedm::add($request->code, $request->codeean13);
-        if ($codedm !== false) {
-            return response()->json(['codedm'=> $codedm]);
+
+        // \Log::debug(__CLASS__ . "->" . __FUNCTION__);
+        // \Log::debug($request->code);
+        // \Log::debug($request->codeean13);
+
+        $error = [];
+
+        $codedm_array = [];
+
+        $codedm_exist = [];
+
+        foreach ($request->data as $key => $element) {
+            if (!isset($element['code'])) {
+                array_push($error, ['error' => ['msg' => 'missing argument', 'argument' => 'code'], 'element' => $element, 'index' => $key]);
+            } else if (!isset($element['codeean13'])) {
+                array_push($error, ['error' => ['msg' => 'missing argument', 'argument' => 'codeean13'], 'element' => $element, 'index' => $key]);
+            } else {
+
+                $code = $element['code'];
+                $codeean13 = $element['codeean13'];
+
+                $codedm = Codedm::add($code, $codeean13);
+                if ($codedm !== false) {
+                    array_push($codedm_array, $codedm);
+                    // return response()->json(['codedm' => $codedm]);
+                } else {
+                    array_push($codedm_exist, ['warning' => ['msg' => 'code datamatrix early exist'], 'element' => $element, 'index' => $key]);
+                }
+            }
         }
-        return response()->json(['error'=>'code datamatrix early exist'], 400);
+        return response()->json(['error' => $error, 'codedm' => $codedm_array, 'exists' => $codedm_exist], 200);
     }
 
     public function getByCode(Request $request)

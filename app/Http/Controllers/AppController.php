@@ -29,7 +29,7 @@ class AppController extends Controller
         $credentials = $request->only('name', 'password');
 
         \Log::debug(json_encode($credentials));
-
+        \Log::debug(User::get()->first());
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $user->company;

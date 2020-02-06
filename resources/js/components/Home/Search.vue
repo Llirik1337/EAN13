@@ -12,7 +12,7 @@
     </a-form-item>
     <a-form-item label="EAN13">{{this.EAN13Msg}}</a-form-item>
     <a-form-item label="code">
-      <a-input ref="code" v-model="code" @pressEnter="endInputCode" :allowClear="true" />
+      <a-input :placeholder="state" ref="code" v-model="code" @pressEnter="endInputCode" :allowClear="true" />
     </a-form-item>
     <a-form-item label="Result">
       <barcode
@@ -49,30 +49,14 @@ export default {
       resultMsg: "",
       codedm: null,
       viewBarcode: false,
-      isEndInputCode: false
+      isEndInputCode: false,
+      state: 'EAN13',
+    //   prefixCode: 'EAN13'
     };
   },
   components: {
     Barcode
   },
-  // watch: {
-  //   code: function(new_val, old_val) {
-  //     // // console.log('old');
-  //     // // console.log(old_val);
-  //     // // console.log('new');
-  //     // // console.log(new_val);
-  //     if (this.isEndInputCode) {
-  //       if (new_val.length >= 13 && new_val <= 15) {
-  //         this.findCodeEan13(new_val);
-  //       } else if (new_val.length >= 128) {
-  //         this.findCodeDm(new_val);
-  //       } else {
-  //         this.EAN13 = "";
-  //       }
-  //       this.isEndInputCode = false;
-  //     }
-  //   }
-  // },
   beforeMount() {
     this.user = this.getUser;
     this.form = this.$form.createForm(this, { name: "search" });
@@ -86,6 +70,7 @@ export default {
 
   methods: {
     ...mapActions(["searchCodeEan13", "searchCodeDMByCode", "searchCodeDM"]),
+
     inRange(val, min, max, left = false, right = false) {
       let resultLeft;
       let resultRight;
@@ -106,26 +91,22 @@ export default {
       return resultLeft && resultRight;
     },
     endInputCode() {
-      // console.log(this.code.length);
-
-      // this.isEndInputCode = true;
-      // if (this.isEndInputCode) {
-      if (this.inRange(this.code.length, 13, 15)) {
-        // console.log('!');
-
+      if (this.inRange(this.code.length, 13, 15) && this.state === 'EAN13') {
         this.viewBarcode = true;
 
         this.findCodeEan13(this.code);
 
         this.$refs.code.focus();
         this.$refs.code.select(true);
-      } else if (this.code.length >= 127) {
-        // console.log(this.code);
+
+        this.state = 'DM'
+      } else if (this.code.length >= 127 && this.state === 'DM') {
         this.viewBarcode = false;
         this.findCodeDm(this.code);
 
         this.$refs.code.focus();
         this.$refs.code.select(true);
+        this.state = 'EAN13'
       } else {
         this.viewBarcode = false;
 

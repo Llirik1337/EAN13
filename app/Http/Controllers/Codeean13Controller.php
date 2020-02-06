@@ -30,30 +30,40 @@ class Codeean13Controller extends Controller
 
     public function add(Request $request)
     {
-
-        if($request->code === '' || $request->code === null)
-        {
-            return response()->json(['error' => ['msg' => 'missing argument', 'argument'=>'code'] ], 400);
+        \Log::debug(__CLASS__ . "->" . __FUNCTION__);
+        \Log::debug($request->data);
+        if ($request->data === null) {
+            return response()->json(['msg' => 'missing argument', 'argument' => 'code']);
         }
 
-        if($request->tovar === '' || $request->tovar === null)
-        {
-            return response()->json(['error' => ['msg' => 'missing argument', 'argument'=>'tovar'] ], 400);
+        $data = $request->data;
+        $error_response = [];
+        $codeean13 = [];
+        foreach ($data as $key => $element) {
+            \Log::debug($element);
+
+
+
+            if (!isset($element['code'])) {
+                array_push($error_response, ['error' => ['msg' => 'missing argument', 'argument' => 'code'], 'element' => $element, 'index' => $key]);
+            } else
+            if (!isset($element['tovar'])) {
+                array_push($error_response, ['error' => ['msg' => 'missing argument', 'argument' => 'tovar'], 'element' => $element, 'index' => $key]);
+            } else
+            if (!isset($element['company'])) {
+                array_push($error_response, ['error' => ['msg' => 'missing argument', 'argument' => 'company'], 'element' => $element, 'index' => $key]);
+            } else {
+                $code = $element['code'];
+                $tovar = $element['tovar'];
+                $company = $element['company'];
+
+                \Log::debug($code);
+                \Log::debug($tovar);
+                \Log::debug($company);
+                array_push($codeean13, Codeean13::add($code, $tovar, $company));
+            }
         }
-
-        if($request->company === '' || $request->company === null)
-        {
-            return response()->json(['error' => ['msg' => 'missing argument', 'argument'=>'company'] ], 400);
-        }
-
-        \Log::debug(__CLASS__. "->" . __FUNCTION__);
-        \Log::debug($request->code);
-        \Log::debug($request->tovar);
-        \Log::debug($request->company);
-
-        $codeean13 = Codeean13::add($request->code, $request->tovar, $request->company);
-        // Codedm::add($request->code, $request->tovar, $request->company);
-        return response()->json(['codeean13' => $codeean13]);
+        return response()->json(['codeean13' => $codeean13, 'error' => $error_response]);
     }
 
     /**
