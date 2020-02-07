@@ -13,7 +13,7 @@ import App from './components/App'
 import Antdv from './antdv'
 import 'ant-design-vue/dist/antd.css';
 Vue.config.productionTip = false;
-import Antd from 'ant-design-vue';
+// import Antd from 'ant-design-vue';
 
 /**
  * The following block of code may be used to automatically register your
@@ -33,7 +33,7 @@ import Antd from 'ant-design-vue';
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-	
+
 const app = new Vue({
     el: '#app',
     render: (h) => h(App),
