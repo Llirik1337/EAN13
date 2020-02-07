@@ -74,7 +74,10 @@ class Codeean13Controller extends Controller
      */
     public function show(Request $request)
     {
-        $codeean13 = Codeean13::getByCode($request->code);
+        $code = $request->get('code');
+        // \Log::debug($code);
+        // \Log::debug($request->all());
+        $codeean13 = Codeean13::getByCode($code);
         \Log::debug(json_encode($codeean13));
         return response()->json(['codeean13' => $codeean13]);
     }

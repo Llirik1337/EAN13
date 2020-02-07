@@ -17,7 +17,7 @@ class CodedmSeeder extends Seeder
     {
         $company = factory(Company::class)->create();
         for ($i = 0; $i < 4; $i++) {
-            factory(Codedm::class, 10)->create([
+            factory(Codedm::class, 50)->create([
                 'codeean13_id' =>  factory(Codeean13::class)->create([
                     'company_id' => $company->id
                 ])

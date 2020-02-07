@@ -1,36 +1,49 @@
 <template>
-  <div>
-    <div ref="barcode" id="print">
-      <div style="width:150mm; font-size: 8pt;">
-        <a-row type="flex">
-          <a-col :span="24">
-            <a-row type="flex">
-              <a-col :span="6">{{ this.tovarName }}</a-col>
-              <a-col>
-                <canvas id="barcode" style="width: 100px; height: 100px"></canvas>
-              </a-col>
-            </a-row>
-            <a-row type="flex">
-              <a-col :offset="6">{{ this.code15 }}</a-col>
-            </a-row>
-            <a-row type="flex">
-              <a-col :offset="6">{{ this.code16 }}</a-col>
-            </a-row>
-          </a-col>
-        </a-row>
-      </div>
+  <div ref="barcode">
+    <div>
+      <table>
+        <tr>
+          <td>{{ this.tovarName }}</td>
+          <td><canvas id="barcode" style="width: 40mm; height: 40mm"></canvas></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>{{ this.code15 }}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>{{ this.code16 }}</td>
+        </tr>
+      </table>
+
+      <!-- <a-row>
+        <a-col :span="12">{{ this.tovarName }}</a-col>
+        <a-col :span="12">
+          <canvas id="barcode" style="width: 20mm; height: 20mm"></canvas>
+        </a-col>
+        <a-col :offset="12" :span="12">{{ this.code15 }}</a-col>
+        <a-col :offset="12" :span="12">{{ this.code16 }}</a-col>
+      </a-row>-->
     </div>
-    <a-button type="primary" @click="printBarcode">Print</a-button>
   </div>
 </template>
 
 <script>
 import bwipjs from "bwip-js";
-import printJS from "print-js";
 
 import { mapActions, mapGetters } from "vuex";
 export default {
-  props: ["value", "tovarName", "toPrint"],
+  //   props: ["value", "tovarName", "preview"],
+  props: {
+    value: {
+      required: true,
+      type: String
+    },
+    tovarName: {
+      required: true,
+      type: String
+    }
+  },
   data: function() {
     return {
       // canvas: null
@@ -38,9 +51,7 @@ export default {
       code16: ""
     };
   },
-  created: function() {
-    this.$parent.$on("print", this.printBarcode);
-  },
+  created: function() {},
   updated() {
     this.init();
   },
@@ -53,25 +64,12 @@ export default {
     init() {
       if (this.value == null || this.tovarName == null) return;
       this.generateBarcode(this.value);
-      this.printBarcode();
       this.setCode31();
     },
     setCode31() {
       this.code15 =
         "(" + this.value.slice(0, 2) + ")" + this.value.slice(2, 15);
       this.code16 = this.value.slice(15, 31);
-    },
-
-    printBarcode() {
-      printJS({
-        printable: "print",
-        type: "html",
-        style: `@page {
-           size: Letter landscape;
-           size: 57mm 40mm;
-           margin: 0px;
-          }`
-      });
     },
 
     generateBarcode(value) {
