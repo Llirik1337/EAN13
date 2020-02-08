@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Codedm;
 use App\Codeean13;
 use Illuminate\Http\Request;
 
@@ -103,5 +104,14 @@ class Codeean13Controller extends Controller
     public function destroy(Codeean13 $codeean13)
     {
         //
+    }
+
+
+    public function getStatistics(Request $request)
+    {
+        \Log::debug('user');
+        \Log::debug(json_encode(auth()->user()));
+        return response()->json(Codeean13::getStatisticsByCompnayId(auth()->user()->company_id));
+        // Codedm::getByStatus("Print");
     }
 }

@@ -111,7 +111,6 @@ export default {
       printJS({
         printable: "print",
         type: "html",
-        css: BASE_URL + '/css/app.css',
         style: `
         @page {
 

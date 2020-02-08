@@ -11,9 +11,6 @@
 |
 */
 
-// use Illuminate\Routing\Route;
-
-// use Illuminate\Routing\Route;
 
 Route::get('/{any?}', function () {
     return view('welcome');
@@ -32,6 +29,7 @@ Route::prefix('codeean13')->group(function ()  {
     Route::post('by', 'Codeean13Controller@show');
     Route::get('/', 'Codeean13Controller@index');
     Route::post('add','Codeean13Controller@add');
+    Route::post('getStatistics', 'Codeean13Controller@getStatistics');
 });
 
 Route::prefix('codedm')->group(function ()  {

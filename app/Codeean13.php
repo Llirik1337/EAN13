@@ -38,4 +38,32 @@ class Codeean13 extends Model
         $codeean13->save();
         return $codeean13;
     }
+
+    public static function getStatisticByCodeeanId($id)
+    {
+        // \Log::debug($id);
+        return [
+            'free' => Codedm::getByStatus($id),
+            'printed' => Codedm::getByStatus($id, "Print"),
+            'inflicted' => Codedm::getByStatus($id, "Inflicted"),
+        ];
+    }
+
+    public static function getStatisticsByCompnayId($company_id)
+    {
+        \Log::debug($company_id);
+        $codeean13 = static::where('company_id', $company_id)->get();
+        $result = $codeean13->map(function ($item) {
+            if ($item !== null) {
+                \Log::debug($item->id);
+                $statistic = static::getStatisticByCodeeanId($item->id);
+                \Log::debug($statistic);
+                $item['statistics'] = $statistic;
+                return $item;
+            }
+        });
+        \Log::debug('$codeean13 result');
+        \Log::debug($result);
+        return $result;
+    }
 }
