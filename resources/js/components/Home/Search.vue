@@ -243,10 +243,12 @@ export default {
 
         if (this.checkDM(this.getCode()))
           this.findCodeDm(this.getCode()).then(res => {
-            this.selectInput();
             this.setNextStep();
           });
-        else this.setResultMsg("DataMatrix codes do not match. Please repeat");
+        else {
+          this.setResultMsg("DataMatrix codes do not match. Please repeat");
+        }
+        this.selectInput();
       }
     },
 
