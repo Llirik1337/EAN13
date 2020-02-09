@@ -9,7 +9,8 @@ import {
     Button,
     Icon,
     Layout,
-    Table
+    Table,
+    Alert
 } from "ant-design-vue";
 // Vue.use(Antd);
 Vue.use(Menu);
@@ -22,3 +23,4 @@ Vue.use(Button);
 Vue.use(Icon);
 Vue.use(Layout);
 Vue.use(Table);
+Vue.use(Alert);

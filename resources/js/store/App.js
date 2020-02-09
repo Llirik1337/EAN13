@@ -92,6 +92,8 @@ export default {
                 req.post("auth/init").then(response => {
                     // console.log('Init');
                     // console.log(response.data);
+                    console.log(response.data);
+
                     ctx.commit("setInit", response.data);
                     resolve();
                 });
@@ -108,6 +110,8 @@ export default {
                     }).then(
                         response => {
                             // console.log(response);
+
+
                             ctx.commit("setUser", response.data);
                             ctx.commit("setIsLogin");
                             resolve(true);

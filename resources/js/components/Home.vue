@@ -3,7 +3,7 @@
     <a-menu theme="light" v-model="current" mode="horizontal">
       <a-menu-item key="search">Marking</a-menu-item>
       <a-menu-item key="statistics">Statistics</a-menu-item>
-      <a-menu-item key="adminPanel">Admin Panel</a-menu-item>
+      <a-menu-item v-show="isAdmin" key="adminPanel">Create user</a-menu-item>
       <a-menu-item key="exit" @click="exit">Exit</a-menu-item>
     </a-menu>
 
@@ -23,13 +23,17 @@ export default {
   data: function() {
     return {
       currentComponent: Search,
-      current: ["search"]
+      current: ["search"],
+      isAdmin: false
     };
   },
   components: {
     Search,
     AdminPanel,
     Statistics
+  },
+  computed: {
+    ...mapGetters(["getUser"])
   },
   watch: {
     current: function(new_val, old_val) {
@@ -48,9 +52,19 @@ export default {
       }
     }
   },
+  beforeMount() {
+    this.Init().then(res => {
+      let user = this.getUser;
+      console.log(user);
+
+      if (user.user_types.name === "admin") {
+        this.isAdmin = true;
+      }
+    });
+  },
   mounted() {},
   methods: {
-    ...mapActions(["LogOut"]),
+    ...mapActions(["LogOut", "Init"]),
     exit() {
       this.LogOut().then(result => {
         if (result) {

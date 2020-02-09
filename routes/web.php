@@ -20,7 +20,6 @@ Route::get('/{any?}', function () {
 Route::prefix('auth')->group(function () {
 
     Route::post('init', 'AppController@init');
-
     Route::post('login', 'AppController@login');
     Route::post('logout', 'AppController@loguot');
 });
@@ -40,4 +39,8 @@ Route::prefix('codedm')->group(function ()  {
 
 Route::prefix('status')->group(function ()  {
     Route::get('set', 'StatusController@store');
+});
+
+Route::prefix('admin')->group(function() {
+    Route::post('createUser', 'AdminController@createUser');
 });

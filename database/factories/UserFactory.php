@@ -6,6 +6,8 @@ use App\User;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 use App\Company;
+// use Illuminate\Support\Facades\App;
+
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -25,3 +27,9 @@ $factory->define(User::class, function (Faker $faker) {
         'remember_token' => Str::random(10),
     ];
 });
+
+// $factory->state(User::class, 'admin', function($faker) {
+//     return [
+//         'user_types_id' => 1
+//     ];
+// });

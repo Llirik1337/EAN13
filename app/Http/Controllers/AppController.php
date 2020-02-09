@@ -18,8 +18,11 @@ class AppController extends Controller
     {
         $user = Auth::user();
         if ($user !== null) {
+            $user->user_types;
             $user->company;
         }
+        \Log::debug('USER');
+        \Log::debug($user);
         return response()->json(['user' => $user], 200);
     }
 

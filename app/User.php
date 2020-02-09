@@ -6,7 +6,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use App\Company;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\UserType;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
@@ -41,16 +42,45 @@ class User extends Authenticatable
     //     'company'
     // ];
 
-    protected $casts = [
-        
-    ];
+    protected $casts = [];
 
     // protected $with = [
     //     'company'
     // ];
 
-    public function company() {
+    public function company()
+    {
         return $this->belongsTo(Company::class);
     }
+    public function user_types()
+    {
+        return $this->belongsTo(UserType::class, 'user_types_id', 'id');
+    }
 
+    public static function createUser($login, $password, $company, $right = 'admin')
+    {
+        $user = static::where('name', $login)->get()->first();
+        if($user === null) {
+
+            $compnay_result = Company::firstOrCreate(['name'=> $company]);
+            \Log::debug('company');
+
+            $compnay_result->name = $company;
+            $compnay_result->save();
+            \Log::debug($compnay_result);
+            $right =UserType::where('name', $right)->get()->first();
+            \Log::debug('right');
+            \Log::debug($right);
+            $user = new User;
+            $user->name = $login;
+            $user->password = bcrypt($password);
+            $user->company_id = $compnay_result->id;
+            $user->user_types_id = $right->id;
+            $user->save();
+            return $user;
+        } else {
+            return false;
+        }
+        // $user = static::firstOrCreate(['name'=> $login]);
+    }
 }

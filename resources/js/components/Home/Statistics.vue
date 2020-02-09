@@ -1,5 +1,5 @@
 <template>
-  <a-table :dataSource="tableData" :columns="columns" ></a-table>
+  <a-table :dataSource="tableData" :rowKey="record => record.code" :columns="columns" :loading="loadingData" ></a-table>
 </template>
 
 <script>
@@ -33,13 +33,15 @@ export default {
   data: function() {
     return {
       tableData: [],
-      columns
+      columns,
+      loadingData: true,
     };
   },
 
   mounted() {
     this.updateStatistics().then(res => {
       this.tableData = this.getStatistics;
+      this.loadingData = false;
       console.log(this.tableData);
     });
   },
