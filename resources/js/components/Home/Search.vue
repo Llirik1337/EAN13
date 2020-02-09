@@ -27,11 +27,11 @@
           </a-input>
         </a-form-item>
         <a-form-item label="Result">
+          <p>{{resultMsg}}</p>
           <div v-if="viewBarcode">
             <barcode id="print" :tovarName="getCodeEAN13().tovarname" :value="getCodeDM().code"></barcode>
             <a-button type="primary" @click="printBarcode">Print</a-button>
           </div>
-          <p v-else>{{resultMsg}}</p>
         </a-form-item>
       </a-form>
     </a-col>
@@ -223,20 +223,22 @@ export default {
 
     endInputCode() {
       if (
-        this.inRange(this.getCode().length, 13, 15) &&
+        /*this.inRange(this.getCode().length, 13, 15) &&*/
         this.eqState("EAN13")
       ) {
         this.hideBarcode();
         this.findCodeEan13(this.getCode()).then(res => {
           this.previewBarcode();
-          if(this.getToPrint()) {
-              this.printBarcode();
+          if (this.getToPrint()) {
+            this.printBarcode();
           }
           this.selectInput();
           this.setNextStep();
         });
-      } else if (this.getCode().length >= 127 && this.eqState("DM")) {
-        this.hideBarcode();
+      }
+      if (/*this.getCode().length >= 127 && */ this.eqState("DM")) {
+        console.log(this.viewBarcode);
+
         console.log(this.checkDM(this.getCode()));
 
         if (this.checkDM(this.getCode()))
@@ -244,18 +246,7 @@ export default {
             this.selectInput();
             this.setNextStep();
           });
-        else this.setResultMsg("DataMatrix codes do not match");
-      } else {
-        this.hideBarcode();
-        this.clearEAN13();
-        switch (this.getState()) {
-          case "DM":
-            this.setResultMsg("Incorrect DataMatrix code");
-            break;
-          case "EAN13":
-            this.setResultMsg("Incorrect EAN13 code");
-            break;
-        }
+        else this.setResultMsg("DataMatrix codes do not match. Please repeat");
       }
     },
 
@@ -276,34 +267,36 @@ export default {
     findCodeDm(val) {
       return new Promise((resolve, reject) => {
         try {
-          this.searchCodeDMByCode(val).then(result => {
-            let msg;
-            let res;
-            if (
-              result.data.codedm !== null &&
-              result.data.codedm !== undefined
-            ) {
-              res = result.data.codedm;
+          this.searchCodeDMByCode(val).then(
+            result => {
+              let msg;
+              let res;
+              if (
+                result.data.codedm !== null &&
+                result.data.codedm !== undefined
+              ) {
+                res = result.data.codedm;
 
-              this.setCodeDM(res);
-              this.setCodeEAN13Msg(res.codeean13.code);
-              this.States.EAN13.EAN13Msg = res.codeean13.code;
-              if (res.status_id !== null) {
-                msg = `code: ${res.code} \n\r change status to ${res.status.name}`;
+                this.setCodeDM(res);
+                this.setCodeEAN13Msg(res.codeean13.code);
+                //   this.States.EAN13.EAN13Msg = res.codeean13.code;
+                if (res.status_id !== null) {
+                  msg = `code: ${res.code} \n\r change status to ${res.status.name}`;
+                } else {
+                  msg = "This code is not printed.";
+                }
               } else {
-                msg = "This code is not printed.";
+                msg = "I did not find the DM code";
               }
-            } else {
-              msg = "I did not find the DM code";
-            }
 
-            this.setResultMsg(msg);
-            //   this.resultMsg = msg;
-            resolve();
-          },
-          res => {
+              this.setResultMsg(msg);
+              //   this.resultMsg = msg;
+              resolve();
+            },
+            res => {
               reject();
-          });
+            }
+          );
         } catch (exeption) {
           console.log(exeption);
         }
