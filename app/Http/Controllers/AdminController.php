@@ -16,7 +16,7 @@ class AdminController extends Controller
         $password = $request->password;
         $company = $request->company;
         //$right = $request->right;
-        $user = User::createUser($login, $password, $company/*, $right*/);
+        $user = User::createUser($login, $password, $company);
         if ($user !== false) {
             return response()->json(['user' => $user, 'msg' => 'User success create']);
         } else {

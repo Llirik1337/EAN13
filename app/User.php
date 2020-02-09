@@ -57,7 +57,7 @@ class User extends Authenticatable
         return $this->belongsTo(UserType::class, 'user_types_id', 'id');
     }
 
-    public static function createUser($login, $password, $company, $right = 'admin')
+    public static function createUser($login, $password, $company, $right = 'user')
     {
         $user = static::where('name', $login)->get()->first();
         if($user === null) {
