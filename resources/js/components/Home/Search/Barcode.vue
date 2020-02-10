@@ -3,16 +3,16 @@
     <div  style="font-size:8pt;">
       <table width="400px">
         <tr>
-          <td>{{ this.tovarName }}</td>
-          <td><canvas id="barcode" style="width: 40mm; height: 40mm"></canvas></td>
+          <td width="35%">{{ this.tovarName }}</td>
+          <td width="65%"><canvas id="barcode" style="width: 40mm; height: 40mm"></canvas></td>
         </tr>
         <tr>
-          <td></td>
-          <td>{{ this.code15 }}</td>
+          <td width="35%"></td>
+          <td width="65%">{{ this.code15 }}</td>
         </tr>
         <tr>
-          <td></td>
-          <td>{{ this.code16 }}</td>
+          <td width="35%"></td>
+          <td width="65%">{{ this.code16 }}</td>
         </tr>
       </table>
 
