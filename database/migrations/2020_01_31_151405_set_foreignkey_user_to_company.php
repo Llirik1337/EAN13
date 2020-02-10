@@ -14,7 +14,7 @@ class SetForeignkeyUserToCompany extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            
+
 
             $table->foreign('company_id')->references('id')->on('company');
         });
@@ -28,7 +28,7 @@ class SetForeignkeyUserToCompany extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign('users_company_id_id_foreign');
+            $table->dropForeign('users_company_id_foreign');
         });
     }
 }

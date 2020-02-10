@@ -15,7 +15,7 @@ class CreateTypeRightsTable extends Migration
     {
         Schema::create('type_rights', function (Blueprint $table) {
             $table->bigIncrements('id');
-
+            // $table->unsignedBigInteger('right_id');
             // $table->string('right');
             $table->timestamps();
         });

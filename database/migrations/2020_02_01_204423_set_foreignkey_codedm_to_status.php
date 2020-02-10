@@ -29,7 +29,7 @@ class SetForeignkeyCodedmToStatus extends Migration
     {
         Schema::table('codedm', function (Blueprint $table) {
             //
-            $table->dropForeign('codedm_status_id_id_foreign');
+            $table->dropForeign('codedm_status_id_foreign');
         });
     }
 }

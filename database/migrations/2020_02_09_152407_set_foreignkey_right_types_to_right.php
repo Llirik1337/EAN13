@@ -27,8 +27,8 @@ class SetForeignkeyRightTypesToRight extends Migration
     public function down()
     {
         Schema::table('type_rights', function (Blueprint $table) {
-            $table->dropForeign('type_rights_right_id_id_foreign');
-            // $table->dropColumn('right_id');
+            $table->dropForeign('type_rights_right_id_foreign');
+            $table->dropColumn('right_id');
         });
     }
 }

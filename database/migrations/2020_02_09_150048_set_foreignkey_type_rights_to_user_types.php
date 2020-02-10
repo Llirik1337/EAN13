@@ -27,7 +27,8 @@ class SetForeignkeyTypeRightsToUserTypes extends Migration
     public function down()
     {
         Schema::table('type_rights', function (Blueprint $table) {
-            $table->dropForeign('type_rights_user_types_id_id_foreign');
+            $table->dropForeign('type_rights_user_types_id_foreign');
+            $table->dropColumn('user_types_id');
         });
     }
 }

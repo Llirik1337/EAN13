@@ -57,7 +57,7 @@ export default {
       let user = this.getUser;
       console.log(user);
 
-      if (user.user_types.name === "admin") {
+      if ( user.user_types_id !== null && user.user_types.name === "admin") {
         this.isAdmin = true;
       }
     });

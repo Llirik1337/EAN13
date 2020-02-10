@@ -28,7 +28,7 @@ class SetForeignkeyCodeean13ToCompany extends Migration
     public function down()
     {
         Schema::table('codeean13', function (Blueprint $table) {
-            $table->dropForeign('codeean13_company_id_id_foreign');
+            $table->dropForeign('codeean13_company_id_foreign');
         });
     }
 }
