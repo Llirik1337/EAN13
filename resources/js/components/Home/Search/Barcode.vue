@@ -1,7 +1,7 @@
 <template>
   <div ref="barcode">
-    <div>
-      <table>
+    <div  style="font-size:8pt;">
+      <table width="400px">
         <tr>
           <td>{{ this.tovarName }}</td>
           <td><canvas id="barcode" style="width: 40mm; height: 40mm"></canvas></td>

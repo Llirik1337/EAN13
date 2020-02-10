@@ -39,53 +39,53 @@ class CodedmSeeder extends Seeder
 
         // ]);
 
-        $type_admin = factory(UserType::class)->create([
-            'name' => 'admin'
-        ]);
+        // $type_admin = factory(UserType::class)->create([
+        //     'name' => 'admin'
+        // ]);
 
-        $type_user = factory(UserType::class)->create([
-            'name' => 'user'
-        ]);
+        // $type_user = factory(UserType::class)->create([
+        //     'name' => 'user'
+        // ]);
 
 
-        $right_adminPanel = factory(Right::class)->create([
-            'name' => 'adminPanel'
-        ]);
-        $right_marking = factory(Right::class)->create([
-            'name' => 'marking'
-        ]);
-        $right_statistics = factory(Right::class)->create([
-            'name' => 'statistics'
-        ]);
+        // $right_adminPanel = factory(Right::class)->create([
+        //     'name' => 'adminPanel'
+        // ]);
+        // $right_marking = factory(Right::class)->create([
+        //     'name' => 'marking'
+        // ]);
+        // $right_statistics = factory(Right::class)->create([
+        //     'name' => 'statistics'
+        // ]);
 
-        factory(TypeRight::class)->create([
-            'right_id'=> $right_adminPanel->id,
-            'user_types_id'=>$type_admin->id,
-        ]);
-        factory(TypeRight::class)->create([
-            'right_id'=> $right_marking->id,
-            'user_types_id'=>$type_admin->id,
-        ]);
-        factory(TypeRight::class)->create([
-            'right_id'=>$right_statistics->id,
-            'user_types_id'=>$type_admin->id,
-        ]);
+        // factory(TypeRight::class)->create([
+        //     'right_id'=> $right_adminPanel->id,
+        //     'user_types_id'=>$type_admin->id,
+        // ]);
+        // factory(TypeRight::class)->create([
+        //     'right_id'=> $right_marking->id,
+        //     'user_types_id'=>$type_admin->id,
+        // ]);
+        // factory(TypeRight::class)->create([
+        //     'right_id'=>$right_statistics->id,
+        //     'user_types_id'=>$type_admin->id,
+        // ]);
 
-        factory(TypeRight::class)->create([
-            'right_id'=> $right_marking->id,
-            'user_types_id'=>$type_user->id,
-        ]);
-        factory(TypeRight::class)->create([
-            'right_id'=>$right_statistics->id,
-            'user_types_id'=>$type_user->id,
-        ]);
+        // factory(TypeRight::class)->create([
+        //     'right_id'=> $right_marking->id,
+        //     'user_types_id'=>$type_user->id,
+        // ]);
+        // factory(TypeRight::class)->create([
+        //     'right_id'=>$right_statistics->id,
+        //     'user_types_id'=>$type_user->id,
+        // ]);
 
-        factory(User::class)->create([
-            'name' => 'admin',
-            'password' => bcrypt('admin'),
-            'company_id' => $company->id,
-            'user_types_id' => $type_admin->id
-        ]);
+        // factory(User::class)->create([
+        //     'name' => 'admin',
+        //     'password' => bcrypt('admin'),
+        //     'company_id' => $company->id,
+        //     'user_types_id' => $type_admin->id
+        // ]);
 
         // DB::table('users')->insert([
         //     'name' => 'admin',
