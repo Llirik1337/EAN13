@@ -3,11 +3,12 @@
     <a-menu theme="light" v-model="current" mode="horizontal">
       <a-menu-item key="search">Marking</a-menu-item>
       <a-menu-item key="statistics">Statistics</a-menu-item>
+      <a-menu-item key="createPackage">Create Packege</a-menu-item>
       <a-menu-item v-show="isAdmin" key="adminPanel">Create user</a-menu-item>
       <a-menu-item key="exit" @click="exit">Exit</a-menu-item>
     </a-menu>
 
-    <a-layout-content>
+    <a-layout-content class="content">
       <component v-bind:is="currentComponent"></component>
     </a-layout-content>
     <!-- <a-layout-footer></a-layout-footer> -->
@@ -17,6 +18,7 @@
 import Search from "./Home/Search";
 import AdminPanel from "./Home/AdminPanel";
 import Statistics from "./Home/Statistics";
+import CreatePackage from "./Home/CreatePackage";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Home",
@@ -30,7 +32,8 @@ export default {
   components: {
     Search,
     AdminPanel,
-    Statistics
+    Statistics,
+    CreatePackage
   },
   computed: {
     ...mapGetters(["getUser"])
@@ -48,6 +51,9 @@ export default {
           break;
         case "adminPanel":
           this.currentComponent = AdminPanel;
+          break;
+        case "createPackage":
+          this.currentComponent = CreatePackage;
           break;
       }
     }
@@ -80,7 +86,7 @@ export default {
 </script>
 
 <style scoped>
-content .content {
+.content {
   background-color: #fff;
 }
 </style>

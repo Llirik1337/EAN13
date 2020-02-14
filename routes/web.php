@@ -44,3 +44,7 @@ Route::prefix('status')->group(function ()  {
 Route::prefix('admin')->group(function() {
     Route::post('createUser', 'AdminController@createUser');
 });
+
+Route::prefix('package')->group(function() {
+    Route::post('add', 'PackageController@store');
+});
