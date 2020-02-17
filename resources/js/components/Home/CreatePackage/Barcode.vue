@@ -1,14 +1,6 @@
 <template>
   <div ref="barcode">
-    <div style="font-size:8pt;">
-      <table width="400px">
-        <tr>
-          <td width="65%">
-            <canvas id="barcode" style="width: 40mm; height: 40mm"></canvas>
-          </td>
-        </tr>
-      </table>
-    </div>
+    <canvas id="barcode"></canvas>
   </div>
 </template>
 
@@ -24,8 +16,7 @@ export default {
     }
   },
   data: function() {
-    return {
-    };
+    return {};
   },
   created: function() {},
   updated() {
@@ -41,15 +32,14 @@ export default {
 
     generateBarcode(value) {
       bwipjs.toCanvas("barcode", {
-        bcid: "gs1datamatrix",
-        text: this.modValue(value),
-        height: 100,
+        bcid: "ean13",
+        text: value,
+        // scale: 3,
+        height: 18,
+        width: 50,
         includetext: true,
         textxalign: "center"
       });
-    },
-    modValue(value) {
-      return "\x1D" + value.slice(0, 2) + ")" + value.slice(2);
     }
   }
 };

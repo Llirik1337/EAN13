@@ -13,11 +13,13 @@ export default {
                     codedms: data
                 })
                     .then(result => {
-                        console.log(result);
-                        const data = result.data;
-                        const status = data.result.result;
-                        const code = data.result.result;
+                        // console.log(result);
+                        const data = result.data.result;
+                        console.log(data);
+
+                        const status = data.result;
                         if (status !== false) {
+                            const code = data.EAN13;
                             resolve(code);
                         } else {
                             reject(data.msg);

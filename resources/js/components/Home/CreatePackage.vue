@@ -1,28 +1,46 @@
 <template>
-  <a-row type="flex" justify="center">
-    <a-col class="package" :span="12">
-      <a-input ref="addDM" placeholder="Input datamatrix" v-model="code" @pressEnter="endInputCode"></a-input>
-      <div class="demo-infinite-container" :infinite-scroll-distance="10">
-        <a-list itemLayout="horizontal" :dataSource="data">
-          <a-list-item slot="renderItem" slot-scope="item, index">
-            <!-- <a href="#" slot="actions" @click="deleteItem(index)">Delete</a> -->
-            <a-popconfirm title="Delete?" @confirm="deleteItem(index)" okText="Yes" cancelText="No">
-              <a href="#">Delete</a>
-            </a-popconfirm>
-            <a-list-item-meta>
-              <a slot="title">{{item.codedm.slice(0,30)}}</a>
-            </a-list-item-meta>
-          </a-list-item>
-        </a-list>
-      </div>
-      <a-button type="primary" @click="createPackage" block>Create package</a-button>
-      <barcode v-if="viewBarcode" :value="code"></barcode>
-    </a-col>
-  </a-row>
+  <div>
+    <a-row type="flex" justify="center">
+      <a-col class="package" :span="12">
+        <a-input
+          ref="addDM"
+          placeholder="Input datamatrix"
+          v-model="code"
+          @pressEnter="endInputCode"
+        ></a-input>
+        <div class="demo-infinite-container" :infinite-scroll-distance="10">
+          <a-list itemLayout="horizontal" :dataSource="data">
+            <a-list-item slot="renderItem" slot-scope="item, index">
+              <!-- <a href="#" slot="actions" @click="deleteItem(index)">Delete</a> -->
+              <a-popconfirm
+                title="Delete?"
+                @confirm="deleteItem(index)"
+                okText="Yes"
+                cancelText="No"
+              >
+                <a href="#">Delete</a>
+              </a-popconfirm>
+              <a-list-item-meta>
+                <a slot="title">{{item.codedm.slice(0,30)}}</a>
+              </a-list-item-meta>
+            </a-list-item>
+          </a-list>
+        </div>
+        <a-button type="primary" @click="createPackage" block>Create package</a-button>
+      </a-col>
+    </a-row>
+    <a-row type="flex" justify="center" class="barcode">
+      <a-col v-if="viewBarcode">
+        <barcode id="print" :value="barcode"></barcode>
+        <a-button type="primary" @click="printBarcode" block>Print</a-button>
+      </a-col>
+    </a-row>
+  </div>
 </template>
 
 <script>
 import Barcode from "./CreatePackage/Barcode";
+import printJS from "print-js";
 import { mapActions } from "vuex";
 export default {
   name: "CreatePackage",
@@ -30,6 +48,7 @@ export default {
     return {
       data: [],
       code: "",
+      barcode: null,
       viewBarcode: false
     };
   },
@@ -43,6 +62,19 @@ export default {
     ...mapActions(["addPackage"]),
     getViewBarcode() {
       return this.viewBarcode;
+    },
+    printBarcode() {
+      printJS({
+        printable: "print",
+        type: "html",
+        style: `
+        @page {
+
+           size: Letter landscape;
+           size: 57mm 40mm;
+           margin: 0px;
+          }`
+      });
     },
     setViewBarcode(val) {
       this.viewBarcode = val;
@@ -58,16 +90,24 @@ export default {
       this.code = val;
     },
 
+    setBarcode(val) {
+      this.barcode = val;
+    },
+
     createPackage() {
       if (this.getData().length > 0)
         this.addPackage(this.getData()).then(
           res => {
+            this.hideBarcode();
             console.log(res);
-            this.setCode(res);
+            this.setBarcode(res.toString());
             this.showBarcode();
+            this.$message.success("Package successfully created");
           },
           res => {
-            this.$message.warning(res);
+            this.$message.error(
+              "Failed to create package. Check datamatrix codes"
+            );
           }
         );
       else this.$message.warning("Input DM code");
@@ -124,5 +164,8 @@ export default {
   padding: 8px 24px;
   height: 300px;
   margin-bottom: 10px;
+}
+.barcode {
+  margin-top: 15px;
 }
 </style>
