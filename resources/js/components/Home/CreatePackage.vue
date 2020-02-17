@@ -63,7 +63,6 @@ export default {
         this.addPackage(this.getData()).then(
           res => {
             console.log(res);
-
             this.setCode(res);
             this.showBarcode();
           },

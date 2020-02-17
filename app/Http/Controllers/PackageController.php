@@ -40,12 +40,12 @@ class PackageController extends Controller
         $msg = 'error missing codems array';
         if($codedms !== null) {
             $result = Package::add($codedms);
-            if($result !== false) {
-                $msg = 'successful add new package';
-            } else {
-                $msg = 'error can\'t add package';
-            }
-            return response()->json(['msg' => $msg, 'result' => $result]);
+            // if($result !== false) {
+            //     $msg = 'successful add new package';
+            // } else {
+            //     $msg = 'error can\'t add package';
+            // }
+            return response()->json(['result' => $result]);
         } else {
             return response()->json(['msg'=> $msg]);
         }

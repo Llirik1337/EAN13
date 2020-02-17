@@ -13,7 +13,7 @@ class Package extends Model
 
     public static function add($codedms)
     {
-        if(count($codedms) > 0) {
+        if (count($codedms) > 0) {
             DB::beginTransaction();
             $package = new Package;
             $package->save();
@@ -22,16 +22,15 @@ class Package extends Model
             \Log::debug('$package');
             \Log::debug(json_encode($package));
             $result = Packagedm::add($package->id, $codedms);
-            if($result === false) {
+            \Log::debug('result');
+            \Log::debug(json_encode($result));
+            if ($result['result'] === false) {
                 DB::rollBack();
                 return $result;
             } else {
                 DB::commit();
-                return $package->EAN13;
+                return ['EAN13' => $package->EAN13, 'result' => true];
             }
-            // \Log::debug('result');
-            // \Log::debug($result);
-            // return $result;
         } else {
             return false;
         }

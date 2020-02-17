@@ -14,11 +14,13 @@ export default {
                 })
                     .then(result => {
                         console.log(result);
-                        const code = result.data.result;
-                        if (code !== false) {
+                        const data = result.data;
+                        const status = data.result.result;
+                        const code = data.result.result;
+                        if (status !== false) {
                             resolve(code);
                         } else {
-                            reject(result.data.msg);
+                            reject(data.msg);
                         }
                     })
                     .then(result => {
