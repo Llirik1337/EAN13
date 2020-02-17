@@ -54,10 +54,14 @@ class CodedmController extends Controller
 
     public function add(Request $request)
     {
-
-        // \Log::debug(__CLASS__ . "->" . __FUNCTION__);
-        // \Log::debug($request->code);
-        // \Log::debug($request->codeean13);
+	\Log::debug($request->all());
+        if($request->data === null) {
+           return response()->json(['error'=>'missing argument']);
+        } else if (!is_array($request->data)) {
+          return response()->json(['error'=>'argument is not array']);
+        }
+         \Log::debug(__CLASS__ . "->" . __FUNCTION__);
+         \Log::debug(json_encode($request->data));
 
         $error = [];
 

@@ -34,8 +34,10 @@ class Codeean13Controller extends Controller
         \Log::debug(__CLASS__ . "->" . __FUNCTION__);
         \Log::debug($request->data);
         if ($request->data === null) {
-            return response()->json(['msg' => 'missing argument', 'argument' => 'code']);
-        }
+            return response()->json(['msg' => 'missing argument']);
+	} else if (!is_array($request->data)) {
+            return response()->json(['msg' => 'argumnet is not array']);
+	}
 
         $data = $request->data;
         $error_response = [];
