@@ -21,7 +21,7 @@ class CreateAdmin extends Seeder
         // \Log::debug(config('app.admin_login'));
         // \Log::debug('company');
         // \Log::debug(config('app.admin_compnay'));
-        $company = Company::firstOrCreate(['name' => config('app.admin_company')]);
+        // $company = Company::firstOrCreate(['name' => config('app.admin_company')]);
         $user_type_admin = UserType::where('name', 'admin')->get()->first();
         // \Log::debug($company);
         $admin = User::updateOrCreate([
@@ -29,7 +29,7 @@ class CreateAdmin extends Seeder
 
         ], [
             'password' => bcrypt(config('app.admin_password')),
-            'company_id' => $company->id,
+            'company_id' => 1,
             'user_types_id' => $user_type_admin->id
         ]);
         // $admin = factory(User::class)->create(['name' => env('app.admin_login'), 'password' =>  env('app.admin_password'), 'company_id' => $company->id]);

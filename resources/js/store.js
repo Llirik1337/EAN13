@@ -6,6 +6,7 @@ import Search from './store/Search'
 import Statistics from './store/Statistics'
 import AdminPanel from './store/AdminPanel'
 import Package from './store/Package'
+import Boxes from './store/Boxes'
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -14,6 +15,7 @@ export default new Vuex.Store({
         Search,
         Statistics,
         AdminPanel,
-        Package
+        Package,
+        Boxes
     }
 })

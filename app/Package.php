@@ -20,6 +20,11 @@ class Package extends Model
         return $package;
     }
 
+    public static function getByEAN($ean)
+    {
+        return static::where('EAN13', $ean)->get()->first();
+    }
+
     public static function add($codedms)
     {
         if (count($codedms) > 0) {

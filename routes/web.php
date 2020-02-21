@@ -48,3 +48,7 @@ Route::prefix('admin')->group(function() {
 Route::prefix('package')->group(function() {
     Route::post('add', 'PackageController@store');
 });
+
+Route::prefix('box')->group(function() {
+    Route::post('add', 'BoxController@store');
+});
