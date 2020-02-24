@@ -26,7 +26,9 @@ export default {
                                 tovarname: item.tovarname,
                                 free: item.statistics.free,
                                 printed: item.statistics.printed,
-                                inflicted: item.statistics.inflicted
+                                inflicted: item.statistics.inflicted,
+                                package: item.statistics.package,
+                                invoice: item.statistics.invoice
                             }
                         })
                         // console.log(updateData);

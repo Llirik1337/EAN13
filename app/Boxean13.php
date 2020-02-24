@@ -11,6 +11,11 @@ class Boxean13 extends Model
         'boxes_id'
     ];
 
+    public function package()
+    {
+        $this->belongsTo(Package::class, 'packages_id', 'id');
+    }
+
 
     public static function checkEAN13($code)
     {
@@ -40,6 +45,11 @@ class Boxean13 extends Model
         } else {
             return ['msg' => "none codeean13", 'result' => false];
         }
+    }
+
+    public static function getByBoxId($box_id)
+    {
+        return static::where('boxes_id', $box_id)->get();
     }
 
     public static function add($box_id,$codes)

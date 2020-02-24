@@ -15,6 +15,15 @@ class Packagedm extends Model
         'codedm_id'
     ];
 
+    public function codedm()
+    {
+        return $this->belongsTo(Codedm::class,'codedm_id');
+    }
+
+    public static function getByPackageId($package_id)
+    {
+        return static::where('package_id', $package_id)->get();
+    }
 
     public static function checkDM($codedms)
     {

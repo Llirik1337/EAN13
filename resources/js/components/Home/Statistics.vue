@@ -1,5 +1,10 @@
 <template>
-  <a-table :dataSource="tableData" :rowKey="record => record.code" :columns="columns" :loading="loadingData" ></a-table>
+  <a-table
+    :dataSource="tableData"
+    :rowKey="record => record.code"
+    :columns="columns"
+    :loading="loadingData"
+  ></a-table>
 </template>
 
 <script>
@@ -15,16 +20,24 @@ const columns = [
     dataIndex: "tovarname"
   },
   {
-      title: 'DM free',
-      dataIndex: 'free'
+    title: "DM free",
+    dataIndex: "free"
   },
   {
-      title: 'DM  print',
-      dataIndex: 'printed'
+    title: "DM  print",
+    dataIndex: "printed"
   },
   {
-      title: 'DM Inflicted',
-      dataIndex: 'inflicted'
+    title: "DM Inflicted",
+    dataIndex: "inflicted"
+  },
+  {
+    title: "DM Package",
+    dataIndex: "package"
+  },
+  {
+    title: "DM Shipped",
+    dataIndex: "invoice"
   }
 ];
 
@@ -34,7 +47,7 @@ export default {
     return {
       tableData: [],
       columns,
-      loadingData: true,
+      loadingData: true
     };
   },
 

@@ -21,6 +21,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         //
         'codeean13/add',
-        'codedm/add'
+        'codedm/add',
+        'invoice/get'
     ];
 }

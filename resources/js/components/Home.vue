@@ -5,6 +5,8 @@
       <a-menu-item key="statistics">Statistics</a-menu-item>
       <a-menu-item key="createPackage">Create Packege</a-menu-item>
       <a-menu-item key="createBox">Create Box</a-menu-item>
+      <a-menu-item key="createShip">Create Shipment</a-menu-item>
+      <a-menu-item key="shipment">Shipment</a-menu-item>
       <a-menu-item v-show="isAdmin" key="adminPanel">Create user</a-menu-item>
       <a-menu-item key="exit" @click="exit">Exit</a-menu-item>
     </a-menu>
@@ -21,6 +23,8 @@ import AdminPanel from "./Home/AdminPanel";
 import Statistics from "./Home/Statistics";
 import CreatePackage from "./Home/CreatePackage";
 import CreateBox from "./Home/Boxes";
+import CreateShipment from "./Home/CreateShipment";
+import Shipment from "./Home/Shipment";
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Home",
@@ -36,7 +40,8 @@ export default {
     AdminPanel,
     Statistics,
     CreatePackage,
-    CreateBox
+    CreateBox,
+    CreateShipment
   },
   computed: {
     ...mapGetters(["getUser"])
@@ -60,6 +65,12 @@ export default {
           break;
         case "createBox":
           this.currentComponent = CreateBox;
+          break;
+        case "createShip":
+          this.currentComponent = CreateShipment;
+          break;
+        case "shipment":
+          this.currentComponent = Shipment;
           break;
       }
     }

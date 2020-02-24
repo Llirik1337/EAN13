@@ -46,6 +46,8 @@ class Codeean13 extends Model
             'free' => Codedm::getByStatus($id),
             'printed' => Codedm::getByStatus($id, "Print"),
             'inflicted' => Codedm::getByStatus($id, "Inflicted"),
+            'package' => Codedm::getByStatus($id, "Package"),
+            'invoice' => Codedm::getByStatus($id, "Invoice"),
         ];
     }
 

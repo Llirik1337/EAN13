@@ -52,3 +52,8 @@ Route::prefix('package')->group(function() {
 Route::prefix('box')->group(function() {
     Route::post('add', 'BoxController@store');
 });
+
+Route::prefix('invoice')->group(function() {
+    Route::post('add', 'InvoiceController@store');
+    Route::post('get', 'InvoiceController@get');
+});
