@@ -22,7 +22,7 @@ export default {
         // console.log('App is mounted');
         this.Init().then(result => {
             // console.log(this.getUser);
-        
+
             if(this.getUser === null) {
                 this.$router.push('/Login');
             } else {
