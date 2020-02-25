@@ -71,7 +71,6 @@ export default {
       this.updateShipment(this.invoice).then(
         res => {
           this.setShipments(this.getShipments);
-
           this.setLoadingData(false);
         },
         res => {

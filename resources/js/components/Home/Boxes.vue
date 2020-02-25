@@ -105,9 +105,7 @@ export default {
             this.$message.success("Box successfully created");
           },
           res => {
-            this.$message.error(
-              "Failed to create box. Check ean13 codes"
-            );
+            this.$message.error("Failed to create box. Check ean13 codes");
           }
         );
       else this.$message.warning("Input DM code");
@@ -119,8 +117,9 @@ export default {
       return this.code;
     },
     addData(code) {
+      console.log(code.slice(0, 12));
       this.getData().push({
-        codeean13: code
+        codeean13: code.slice(0, 12)
       });
     },
     endInputCode() {

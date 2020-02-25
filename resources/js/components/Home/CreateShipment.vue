@@ -71,18 +71,6 @@ export default {
     getInvoice() {
       return this.invoice;
     },
-    // getVisibleModal() {
-    //     return visible;
-    // },
-    // setVisibleModal(val) {
-    //     this.visible = val;
-    // },
-    // hideModal() {
-    //     this.setVisibleModal(false);
-    // },
-    // showModal() {
-    //     this.setVisibleModal(true);
-    // },
     setBarcode(val) {
       this.barcode = val;
     },
@@ -92,16 +80,12 @@ export default {
         return;
       }
       if (this.getData().length > 0) {
-          const data = {
-              data: this.getData(),
-              invoice: this.getInvoice()
-          }
+        const data = {
+          data: this.getData(),
+          invoice: this.getInvoice()
+        };
         this.addInvoice(data).then(
           res => {
-            // this.hideBarcode();
-            console.log(res);
-            // this.setBarcode(res.toString());
-            // this.showBarcode();
             this.$message.success("Shipment completed successfully");
           },
           res => {
@@ -117,8 +101,10 @@ export default {
       return this.code;
     },
     addData(code) {
+      console.log(code.slice(0, 12));
+
       this.getData().push({
-        codeean13: code
+        codeean13: code.slice(0, 12)
       });
     },
     endInputCode() {
