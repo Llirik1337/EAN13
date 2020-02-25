@@ -3,7 +3,7 @@
     <a-menu theme="light" v-model="current" mode="horizontal">
       <a-menu-item key="search">Marking</a-menu-item>
       <a-menu-item key="statistics">Statistics</a-menu-item>
-      <a-menu-item key="createPackage">Create Packege</a-menu-item>
+      <a-menu-item key="createPackage">Create Package</a-menu-item>
       <a-menu-item key="createBox">Create Box</a-menu-item>
       <a-menu-item key="createShip">Create Shipment</a-menu-item>
       <a-menu-item key="shipment">Shipment</a-menu-item>
