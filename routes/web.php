@@ -24,36 +24,37 @@ Route::prefix('auth')->group(function () {
     Route::post('logout', 'AppController@loguot');
 });
 
-Route::prefix('codeean13')->group(function ()  {
+Route::prefix('codeean13')->group(function () {
     Route::post('by', 'Codeean13Controller@show');
     Route::get('/', 'Codeean13Controller@index');
-    Route::post('add','Codeean13Controller@add');
+    Route::post('add', 'Codeean13Controller@add');
+    Route::post('update', 'Codeean13Controller@update');
     Route::post('getStatistics', 'Codeean13Controller@getStatistics');
 });
 
-Route::prefix('codedm')->group(function ()  {
+Route::prefix('codedm')->group(function () {
     Route::post('by', 'CodedmController@show');
     Route::post('byCode/', 'CodedmController@getByCode');
-    Route::post('add','CodedmController@add');
+    Route::post('add', 'CodedmController@add');
 });
 
-Route::prefix('status')->group(function ()  {
+Route::prefix('status')->group(function () {
     Route::get('set', 'StatusController@store');
 });
 
-Route::prefix('admin')->group(function() {
+Route::prefix('admin')->group(function () {
     Route::post('createUser', 'AdminController@createUser');
 });
 
-Route::prefix('package')->group(function() {
+Route::prefix('package')->group(function () {
     Route::post('add', 'PackageController@store');
 });
 
-Route::prefix('box')->group(function() {
+Route::prefix('box')->group(function () {
     Route::post('add', 'BoxController@store');
 });
 
-Route::prefix('invoice')->group(function() {
+Route::prefix('invoice')->group(function () {
     Route::post('add', 'InvoiceController@store');
     Route::post('get', 'InvoiceController@get');
 });

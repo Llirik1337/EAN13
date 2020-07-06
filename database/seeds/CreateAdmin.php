@@ -29,7 +29,7 @@ class CreateAdmin extends Seeder
 
         ], [
             'password' => bcrypt(config('app.admin_password')),
-            'company_id' => 1,
+            'company_id' => Company::get()->first()->id,
             'user_types_id' => $user_type_admin->id
         ]);
         // $admin = factory(User::class)->create(['name' => env('app.admin_login'), 'password' =>  env('app.admin_password'), 'company_id' => $company->id]);

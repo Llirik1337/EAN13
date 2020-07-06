@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Codedm;
 use App\Codeean13;
+use Error;
+use Exception;
 use Illuminate\Http\Request;
 
 class Codeean13Controller extends Controller
@@ -35,9 +37,9 @@ class Codeean13Controller extends Controller
         \Log::debug($request->data);
         if ($request->data === null) {
             return response()->json(['msg' => 'missing argument']);
-	} else if (!is_array($request->data)) {
+        } else if (!is_array($request->data)) {
             return response()->json(['msg' => 'argumnet is not array']);
-	}
+        }
 
         $data = $request->data;
         $error_response = [];
@@ -92,9 +94,40 @@ class Codeean13Controller extends Controller
      * @param  \App\Codeean13  $codeean13
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Codeean13 $codeean13)
+    public function update(Request $request)
     {
-        //
+        try {
+            // \Log::debug(__CLASS__ . "->" . __FUNCTION__);
+            // \Log::debug($request->data);
+            $data = $request->data;
+            if ($data === null || $data["old"] === null || $data["new"] === null) {
+                throw new Error();
+            }
+
+
+            $old = $data['old'];
+            $new = $data['new'];
+
+            // \Log::debug($old);
+            // \Log::debug($new);
+
+            if (count($old) !== count($new)) {
+                throw new Error();
+            }
+
+            $errors = [];
+            for ($i = 0; $i < count($old); $i++) {
+                if (!Codeean13::updateCode($old[$i], $new[$i])) {
+                    array_push($errors, [$old[$i], $new[$i]]);
+                }
+            }
+            return response()->json(["errors" => $errors], 200);
+        } catch (Exception $e) {
+            return response()->json("Error request", 400);
+        }
+        // foreach($old as $code) {
+        //     Codeean13::updateCode()
+        // }
     }
 
     /**
