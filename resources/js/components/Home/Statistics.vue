@@ -4,7 +4,11 @@
     :rowKey="record => record.code"
     :columns="columns"
     :loading="loadingData"
-  ></a-table>
+  >
+      <template v-slot:action="{item}">
+          {{item}}
+      </template>
+  </a-table>
 </template>
 
 <script>
@@ -19,6 +23,10 @@ const columns = [
     title: "Tovar name",
     dataIndex: "tovarname"
   },
+    {
+        title: "Functions",
+        scopedSlots: { customRender: 'action' },
+    },
   {
     title: "DM free",
     dataIndex: "free"
@@ -51,18 +59,17 @@ export default {
     };
   },
 
-  mounted() {
-    this.updateStatistics().then(res => {
-      this.tableData = this.getStatistics;
-      this.loadingData = false;
-      console.log(this.tableData);
-    });
+  async mounted() {
+    await this.updateStatistics()
+    this.tableData = this.getStatistics;
+    this.loadingData = false;
+      console.log()
   },
   computed: {
     ...mapGetters(["getStatistics"])
   },
   methods: {
-    ...mapActions(["updateStatistics"])
+    ...mapActions(["updateStatistics",'getAllDMCodes'])
   }
 };
 </script>

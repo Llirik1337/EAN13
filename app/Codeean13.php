@@ -19,11 +19,16 @@ class Codeean13 extends Model
         return $this->belongsTo(Company::class);
     }
 
+
     public static function getByCode($code)
     {
         \Log::debug('getByCode');
 
         return static::where('code', $code)->where('company_id', Auth::user()->company->id)->get()->first();
+    }
+
+    public static function getAllCodedm($codeean) {
+        return static::where('code', $codeean)->where('company_id', Auth::user()->company->id)->get()->all();
     }
 
     public static function add($code, $tovar = null, $company = null)
@@ -62,7 +67,7 @@ class Codeean13 extends Model
         return true;
     }
 
-    public static function getStatisticsByCompnayId($company_id)
+    public static function getStatisticsByCompanyId($company_id)
     {
         \Log::debug($company_id);
         $codeean13 = static::where('company_id', $company_id)->get();

@@ -39,6 +39,14 @@ export default {
                     result => {}
                 );
             });
+        },
+        async getAllDMCodes(ctx, codeeanId) {
+            try {
+                const res = await req.post('codeean13/getAllDM',{data: {codeeanId}})
+                console.log(res);
+            }catch (e) {
+                throw e;
+            }
         }
     }
 };

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="ean13@localhost" uuid="145463d7-cc61-42f8-af73-bd43a3fcc9fb">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/ean13</jdbc-url>
+      <driver-properties>
+        <property name="serverTimezone" value="MSK" />
+      </driver-properties>
+      <time-zone>Europe/Moscow</time-zone>
+    </data-source>
+  </component>
+</project>

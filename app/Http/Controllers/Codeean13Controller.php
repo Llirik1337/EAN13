@@ -7,6 +7,8 @@ use App\Codeean13;
 use Error;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class Codeean13Controller extends Controller
 {
@@ -99,10 +101,12 @@ class Codeean13Controller extends Controller
         try {
             // \Log::debug(__CLASS__ . "->" . __FUNCTION__);
             // \Log::debug($request->data);
+            $validateData = $request->validate(['data'=>'require']);
             $data = $request->data;
-            if ($data === null || $data["old"] === null || $data["new"] === null) {
-                throw new Error();
-            }
+//            if ($data === null || $data["old"] === null || $data["new"] === null) {
+//                Log::debug('!!!');
+//                throw new Error();
+//            }
 
 
             $old = $data['old'];
@@ -141,12 +145,24 @@ class Codeean13Controller extends Controller
         //
     }
 
+    public function getAllCodedm(Request $request) {
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
+        $validateData = $request->validate(['codeean'=> 'required']);
+        $input = $request->all();
+        Log::debug($input['codeean']);
+        $result = Codedm::getByStatus($input['codeean'], 'free');
+        Log::debug(json_encode($result));
+        return response()->json(['data'=>$result])->status(200);
+    }
 
     public function getStatistics(Request $request)
     {
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
         \Log::debug('user');
-        \Log::debug(json_encode(auth()->user()));
-        return response()->json(Codeean13::getStatisticsByCompnayId(auth()->user()->company_id));
+        \Log::debug(json_encode(Auth::id()));
+        return response()->json(Codeean13::getStatisticsByCompanyId(auth()->user()->company_id));
         // Codedm::getByStatus("Print");
     }
 }

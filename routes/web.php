@@ -30,6 +30,7 @@ Route::prefix('codeean13')->group(function () {
     Route::post('add', 'Codeean13Controller@add');
     Route::post('update', 'Codeean13Controller@update');
     Route::post('getStatistics', 'Codeean13Controller@getStatistics');
+    Route::post('getAllDM', 'Codeean13Controller@getStatistics');
 });
 
 Route::prefix('codedm')->group(function () {

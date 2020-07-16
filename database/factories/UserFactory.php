@@ -23,7 +23,7 @@ $factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'password' => bcrypt(Str::random(8)),
-        'company_id' => factory(Company::class),
+        'company_id' => factory(Company::class)->create(),
         'remember_token' => Str::random(10),
     ];
 });
