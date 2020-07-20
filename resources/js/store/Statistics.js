@@ -40,10 +40,16 @@ export default {
                 );
             });
         },
-        async getAllDMCodes(ctx, codeeanId) {
+        async getAllDMCodes(ctx, codeean) {
             try {
-                const res = await req.post('codeean13/getAllDM',{data: {codeeanId}})
-                console.log(res);
+                return (await req.post('codeean13/getAllDM', {codeean})).data.data
+            }catch (e) {
+                throw e;
+            }
+        },
+        async getAllFreeDMCode(ctx) {
+            try {
+                return (await req.post('codeean13/getAllFreeDMCode')).data.data
             }catch (e) {
                 throw e;
             }

@@ -1,10 +1,12 @@
 <template>
-  <div ref="barcode">
-    <div  style="font-size:8pt;">
-      <table width="400px">
-        <tr>
-          <td width="35%">{{ this.tovarName }}</td>
-          <td width="65%"><canvas id="barcode" style="width: 40mm; height: 40mm"></canvas></td>
+  <div :key="Math.random()">
+        {{this.codeean}}
+      <table>
+          <tr>
+          <td width="35%">
+              {{ this.tovarName }}
+          </td>
+          <td width="65%"><canvas ref="barcode" style="width: 35mm; height: 35mm"></canvas></td>
         </tr>
         <tr>
           <td width="35%"></td>
@@ -15,16 +17,6 @@
           <td width="65%">{{ this.code16 }}</td>
         </tr>
       </table>
-
-      <!-- <a-row>
-        <a-col :span="12">{{ this.tovarName }}</a-col>
-        <a-col :span="12">
-          <canvas id="barcode" style="width: 20mm; height: 20mm"></canvas>
-        </a-col>
-        <a-col :offset="12" :span="12">{{ this.code15 }}</a-col>
-        <a-col :offset="12" :span="12">{{ this.code16 }}</a-col>
-      </a-row>-->
-    </div>
   </div>
 </template>
 
@@ -33,8 +25,11 @@ import bwipjs from "bwip-js";
 
 import { mapActions, mapGetters } from "vuex";
 export default {
-  //   props: ["value", "tovarName", "preview"],
   props: {
+      codeean: {
+          type: String,
+          default: ''
+      },
     value: {
       required: true,
       type: String
@@ -51,20 +46,19 @@ export default {
       code16: ""
     };
   },
-  created: function() {},
-  updated() {
+updated() {
     this.init();
-  },
+},
   mounted() {
-    this.init();
+      this.init();
   },
   methods: {
     ...mapActions(["getBarcode"]),
 
-    init() {
+    async init() {
       if (this.value == null || this.tovarName == null) return;
-      this.generateBarcode(this.value);
-      this.setCode31();
+      this.generateBarcode(this.value)
+          this.setCode31();
     },
     setCode31() {
       this.code15 =
@@ -73,7 +67,8 @@ export default {
     },
 
     generateBarcode(value) {
-      bwipjs.toCanvas("barcode", {
+        // console.log(value)
+      bwipjs.toCanvas(this.$refs.barcode, {
         bcid: "gs1datamatrix",
         text: this.modValue(value),
         height: 100,

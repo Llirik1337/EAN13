@@ -29,7 +29,7 @@
         <a-form-item label="Result">
           <p>{{resultMsg}}</p>
           <div v-if="viewBarcode">
-            <barcode id="print" :tovarName="getCodeEAN13().tovarname" :value="getCodeDM().code"></barcode>
+            <barcode id="print" :tovarName="getCodeEAN13().tovarname" :codeean="code" :value="getCodeDM().code"></barcode>
             <a-button type="primary" @click="printBarcode">Print</a-button>
           </div>
         </a-form-item>
@@ -113,10 +113,14 @@ export default {
         type: "html",
         style: `
         @page {
-
            size: Letter landscape;
            size: 57mm 40mm;
            margin: 0px;
+          }
+          @media print {
+          *{
+          font-size: 8pt;
+          }
           }`
       });
     },
@@ -351,30 +355,21 @@ export default {
       this.resultMsg = val;
     },
 
-    findCodeEan13(val) {
-      return new Promise((resolve, reject) => {
-        this.searchCodeEan13(val).then(
-          result => {
-            this.setCodeEAN13(result);
-            this.setCodeEAN13Msg(result.code);
-            this.searchCodeDM(this.getCodeEAN13().id).then(
-              result => {
-                this.setCodeDM(result);
-                this.showBarcode();
-                resolve();
-              },
-              result => {
-                this.setResultMsg(result);
-                this.showBarcode();
-                reject();
-              }
-            );
-          },
-          result => {
-            this.setCodeEAN13Msg(result);
-          }
-        );
-      });
+    async findCodeEan13(val) {
+        try {
+            const result = await this.searchCodeEan13(val)
+                    this.setCodeEAN13(result);
+                    this.setCodeEAN13Msg(result.code);
+                    try {
+                        const res = await this.searchCodeDM(this.getCodeEAN13().id)
+                        this.setCodeDM(res);
+                        this.showBarcode();
+                    } catch (e) {
+                        this.setCodeEAN13Msg('did’t find free DM');
+                    }
+        } catch (e) {
+            this.setCodeEAN13Msg('this EAN is not registered');
+        }
     },
 
     setToPrint(val) {

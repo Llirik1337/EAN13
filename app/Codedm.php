@@ -3,8 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Statuscodedm;
-use App\Codeean13;
+use Illuminate\Support\Facades\Log;
 
 class Codedm extends Model
 {
@@ -20,12 +19,41 @@ class Codedm extends Model
         return $this->belongsTo(Codeean13::class);
     }
 
+    public static function setStatus($id, $textStatus = 'Print') {
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
+        Log::debug($id);
+        $codedm = static::where('id',$id)->get()->first();
+        if(!$codedm->status_id) {
+            $status = $codedm->Status()->create(['name' => $textStatus]);
+            $status->save();
+            $codedm->status_id = $status->id;
+        } else {
+            $status = Statuscodedm::find($codedm->status_id);
+            $status->name = $textStatus;
+            $status->save();
+        }
+        \Log::debug('status');
+        \Log::debug($status);
+
+        $codedm->save();
+    }
+
     public static function getCodeDmByCodeEan13Id($id)
     {
         \Log::debug('id');
         \Log::debug($id);
         return static::where('codeean13_id', $id)->where('status_id', null)->get()->first();
     }
+
+    public static function getByCodeeanId($codeDm,$codeeanId) {
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
+        Log::debug($codeDm);
+        Log::debug($codeeanId);
+        return static::where('code', $codeDm)->where('codeean13_id',$codeeanId)->get()->first();
+    }
+
 
     public static function getByCode($code)
     {
@@ -52,25 +80,20 @@ class Codedm extends Model
         return $codedm;
     }
 
+
     public static function getByStatus($codeean13,$status = null)
     {
-        // \Log::debug($status);
         if ($status !== null) {
             $codedm = static::where('codeean13_id', $codeean13)->where('status_id','!=', null)->with('status')->get();
-            // \Log::debug($codedm);
             $codedmByStatus = $codedm->filter(function($item) use ($status) {
-
                 if($item !== null && $item->status->name === $status) {
                     return $item;
                 }
             });
-            // \Log::debug('codedmByStatus');
-            // \Log::debug($codedmByStatus->count());
-            return $codedmByStatus->count();
+            return $codedmByStatus;
         } else {
             $codedm = static::where('codeean13_id', $codeean13)->where('status_id', null)->with('status')->get();
-            return $codedm->count();
-            // \Log::debug($codedm->count());
+            return $codedm;
         }
     }
 }

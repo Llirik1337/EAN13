@@ -9,6 +9,8 @@ import Package from './store/Package'
 import Boxes from './store/Boxes'
 import Invoice from './store/Invoice'
 import Shipment from './store/Shipment'
+import Checking from "./store/Checking";
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -20,6 +22,7 @@ export default new Vuex.Store({
         Package,
         Boxes,
         Invoice,
-        Shipment
+        Shipment,
+        Checking
     }
 })

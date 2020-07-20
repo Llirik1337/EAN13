@@ -30,13 +30,16 @@ Route::prefix('codeean13')->group(function () {
     Route::post('add', 'Codeean13Controller@add');
     Route::post('update', 'Codeean13Controller@update');
     Route::post('getStatistics', 'Codeean13Controller@getStatistics');
-    Route::post('getAllDM', 'Codeean13Controller@getStatistics');
+    Route::post('getAllDM', 'Codeean13Controller@getAllCodedm');
+    Route::post('getAllFreeDMCode', 'Codeean13Controller@getAllFreeDMCode');
 });
 
 Route::prefix('codedm')->group(function () {
     Route::post('by', 'CodedmController@show');
     Route::post('byCode/', 'CodedmController@getByCode');
     Route::post('add', 'CodedmController@add');
+    Route::post('checking', 'CodedmController@getByEanDM');
+    Route::post('setStatus', 'CodedmController@setStatus');
 });
 
 Route::prefix('status')->group(function () {

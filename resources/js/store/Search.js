@@ -11,22 +11,20 @@ export default {
     },
     getters: {},
     actions: {
-        searchCodeEan13({ commit }, code) {
-            return new Promise((resolve, reject) => {
+        async searchCodeEan13({ commit }, code) {
+            try {
                 const Code = code.substring(0, 13);
-                req.post("codeean13/by", {
+                const response = await req.post("codeean13/by", {
                     code: Code,
-                    // test: '123123123'
-                }).then(response => {
-                    const codeean13 = response.data.codeean13;
-                    commit("setEAN13", codeean13);
-                    if (codeean13 !== null) {
-                        resolve(codeean13);
-                    } else {
-                        reject("this EAN is not registered");
-                    }
-                });
-            });
+                })
+                const codeean13 = response.data.codeean13;
+                commit("setEAN13", codeean13);
+                if (codeean13 !== null) {
+                    return codeean13;
+                }
+            } catch (e) {
+                throw e;
+            }
         },
         searchCodeDM({ commit }, codeean13_id) {
             return new Promise((resolve, reject) => {
@@ -47,30 +45,12 @@ export default {
             return new Promise((resolve, reject) => {
                 // console.log('searchCodeDMByCode');
                 console.log(code);
-
                 req.post("codedm/byCode", {
                     code: code
                 }).then(response => {
                     // let msg;
                     console.log(response);
                     resolve(response);
-
-                    // resolve(msg);
-                    // const codedm = response.data.codedm;
-                    // console.log(codedm);
-                    // if (codedm !== null) {
-                    //     resolve(codedm);
-                    //     // req.post('status/set', {
-                    //     //     id: codedm.status_id,
-                    //     //     statusText: 'Print'
-                    //     // }).then(result => {
-                    //     //     resolve(codedm);
-                    //     // }, result => {
-                    //     //     reject('did’t find free DM');
-                    //     // });
-                    // }
-                    // else
-                    //     reject('did’t find free DM');
                 });
             });
         }

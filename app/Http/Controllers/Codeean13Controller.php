@@ -150,10 +150,16 @@ class Codeean13Controller extends Controller
         Log::debug(__FUNCTION__);
         $validateData = $request->validate(['codeean'=> 'required']);
         $input = $request->all();
-        Log::debug($input['codeean']);
-        $result = Codedm::getByStatus($input['codeean'], 'free');
+        $codeean = $input['codeean'];
+        $ean = Codeean13::getByCode($codeean);
+        $result = Codedm::getByStatus($ean->id,null);
         Log::debug(json_encode($result));
-        return response()->json(['data'=>$result])->status(200);
+        return response()->json(['data'=>$result]);
+    }
+
+    public function getAllFreeDMCode(Request $request) {
+        $result = Codeean13::getAllDMByStatus();
+        return response()->json(['data'=>$result]);
     }
 
     public function getStatistics(Request $request)

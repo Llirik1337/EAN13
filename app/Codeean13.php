@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Company;
+use Illuminate\Support\Facades\Log;
 
 class Codeean13 extends Model
 {
@@ -46,14 +47,28 @@ class Codeean13 extends Model
 
     public static function getStatisticByCodeeanId($id)
     {
-        // \Log::debug($id);
         return [
-            'free' => Codedm::getByStatus($id),
-            'printed' => Codedm::getByStatus($id, "Print"),
-            'inflicted' => Codedm::getByStatus($id, "Inflicted"),
-            'package' => Codedm::getByStatus($id, "Package"),
-            'invoice' => Codedm::getByStatus($id, "Invoice"),
+            'free' => Codedm::getByStatus($id)->count(),
+            'printed' => Codedm::getByStatus($id, "Print")->count(),
+            'inflicted' => Codedm::getByStatus($id, "Inflicted")->count(),
+            'package' => Codedm::getByStatus($id, "Package")->count(),
+            'invoice' => Codedm::getByStatus($id, "Invoice")->count(),
         ];
+    }
+
+    public static function getAllDMByStatus($status = null) {
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
+        $eancodes = static::where('company_id', Auth::user()->company->id)->get()->all();
+        $result = [];
+        foreach ($eancodes as $eancode) {
+            Log::debug(json_encode($eancode));
+            $codedms =  Codedm::getByStatus($eancode->id, $status);
+            if(count($codedms))
+                array_push($result,['eancode'=>$eancode->code,'codes'=>$codedms, 'tovarName'=>$eancode->tovarname]);
+        }
+        Log::debug(json_encode($result));
+        return $result;
     }
 
     public static function updateCode($old_code, $new_code)

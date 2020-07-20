@@ -3,6 +3,7 @@
     <a-menu theme="light" v-model="current" mode="horizontal">
       <a-menu-item key="search">Marking</a-menu-item>
       <a-menu-item key="statistics">Statistics</a-menu-item>
+        <a-menu-item key="checking">Checking</a-menu-item>
       <a-menu-item key="createPackage">Create Package</a-menu-item>
       <a-menu-item key="createBox">Create Box</a-menu-item>
       <a-menu-item key="createShip">Create Shipment</a-menu-item>
@@ -25,6 +26,9 @@ import CreatePackage from "./Home/CreatePackage";
 import CreateBox from "./Home/Boxes";
 import CreateShipment from "./Home/CreateShipment";
 import Shipment from "./Home/Shipment";
+import Checking from "./Home/Checking";
+
+
 import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Home",
@@ -41,7 +45,8 @@ export default {
     Statistics,
     CreatePackage,
     CreateBox,
-    CreateShipment
+    CreateShipment,
+      Checking
   },
   computed: {
     ...mapGetters(["getUser"])
@@ -53,6 +58,9 @@ export default {
       switch (new_val[0]) {
         case "search":
           this.currentComponent = Search;
+          break;
+        case "checking":
+          this.currentComponent = Checking;
           break;
         case "statistics":
           this.currentComponent = Statistics;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Codedm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CodedmController extends Controller
 {
@@ -106,6 +107,27 @@ class CodedmController extends Controller
             }
         }
         return response()->json(['codedm' => $codedm]);
+    }
+
+    public function getByEanDM(Request $request){
+        $request->validate(['codeean_id'=> 'required','codedm'=> 'required']);
+        $input = $request->all();
+        Log::debug($input);
+        $codeeanId = $input['codeean_id'];
+        $codedm = $input['codedm'];
+        $result = Codedm::getByCodeeanId($codedm, $codeeanId);
+        if($result)
+            $result->Status;
+        return response()->json(['data'=>$result]);
+    }
+
+    public function setStatus(Request $request) {
+        $request->validate(['codedm_id'=>'required', 'status'=>'required']);
+
+        $input = $request->all();
+        $codedm_id = $input['codedm_id'];
+        $status = $input['status'];
+        Codedm::setStatus($codedm_id, $status);
     }
 
     /**

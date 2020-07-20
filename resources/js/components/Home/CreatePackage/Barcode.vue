@@ -1,7 +1,5 @@
 <template>
-  <div ref="barcode">
-    <canvas id="barcode"></canvas>
-  </div>
+    <canvas ref="barcode"></canvas>
 </template>
 
 <script>
@@ -31,7 +29,7 @@ export default {
     },
 
     generateBarcode(value) {
-      bwipjs.toCanvas("barcode", {
+      bwipjs.toCanvas(this.$refs.barcode, {
         bcid: "ean13",
         text: value,
         // scale: 3,
