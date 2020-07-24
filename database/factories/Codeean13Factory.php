@@ -10,7 +10,7 @@ use App\Company;
 $factory->define(Codeean13::class, function (Faker $faker) {
     return [
         'code' => Str::random(13),
-        'tovarname' => $faker->name,
+        'tovarname' => $faker->text(100),
         // 'company_id' => factory(Company::class),
     ];
 });

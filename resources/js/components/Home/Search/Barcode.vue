@@ -1,7 +1,7 @@
 <template>
   <div :key="Math.random()">
         {{this.codeean}}
-      <table>
+      <table width="500">
           <tr>
           <td width="35%">
               {{ this.tovarName }}
@@ -9,6 +9,7 @@
           <td width="65%"><canvas ref="barcode" style="width: 35mm; height: 35mm"></canvas></td>
         </tr>
         <tr>
+
           <td width="35%"></td>
           <td width="65%">{{ this.code15 }}</td>
         </tr>
