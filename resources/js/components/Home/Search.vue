@@ -174,7 +174,7 @@ export default {
       this.$refs.code.select(true);
     },
     setNextStep() {
-      console.log(this.getState());
+      // console.log(this.getState());
 
       switch (this.getState()) {
         case "EAN13":
@@ -185,11 +185,11 @@ export default {
           break;
       }
 
-      console.log(this.getState());
+      // console.log(this.getState());
     },
 
     hideBarcode() {
-      console.log(this.viewBarcode);
+      // console.log(this.viewBarcode);
 
       this.viewBarcode = false;
     },
@@ -304,7 +304,7 @@ export default {
             }
           );
         } catch (exeption) {
-          console.log(exeption);
+          // console.log(exeption);
         }
       });
     },
@@ -339,7 +339,7 @@ export default {
       return this.States.EAN13.EAN13;
     },
     setCodeEAN13Msg(val) {
-      console.log(val);
+      // console.log(val);
 
       this.States.EAN13.EAN13Msg = val;
     },

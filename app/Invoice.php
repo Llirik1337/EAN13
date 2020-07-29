@@ -24,27 +24,27 @@ class Invoice extends Model
         $packages = [];
         if ($existInvoce === null) {
             foreach ($codeean13 as $code) {
-                \Log::debug('code');
-                \Log::debug($code);
+//                \Log::debug('code');
+//                \Log::debug($code);
                 $sufix = substr($code['codeean13'], 0, 3);
-                \Log::debug('sufix');
-                \Log::debug($sufix);
+//                \Log::debug('sufix');
+//                \Log::debug($sufix);
                 switch ($sufix) {
                     case "241":
                         $package =  Package::getByEAN($code);
                         if ($package !== null) {
                             // $package->status;
-                            \Log::debug('package');
-                            \Log::debug($package);
+//                            \Log::debug('package');
+//                            \Log::debug($package);
                             switch ($package->status['name']) {
                                 case 'Package Invoice':
-                                    \Log::debug('status');
-                                    \Log::debug($package->status);
+//                                    \Log::debug('status');
+//                                    \Log::debug($package->status);
                                     array_push($package_error, ['msg' => 'Package previously added', 'package' => $package]);
                                     break;
                                 default:
-                                    \Log::debug('status');
-                                    \Log::debug($package->status);
+//                                    \Log::debug('status');
+//                                    \Log::debug($package->status);
                                     $package->status['name'] = 'Package Invoice';
                                     $package->status->save();
                                     array_push($packages, $package);
@@ -56,10 +56,10 @@ class Invoice extends Model
                         break;
                     case "242":
                         $box = Box::getByEAN($code);
-                        \Log::debug('box');
-                        \Log::debug($box);
-                        \Log::debug('status');
-                        \Log::debug($box->status);
+//                        \Log::debug('box');
+//                        \Log::debug($box);
+//                        \Log::debug('status');
+//                        \Log::debug($box->status);
                         if ($box !== null) {
                             switch ($box->status['name']) {
                                 case 'Box Invoice':
@@ -70,11 +70,11 @@ class Invoice extends Model
                                     $box->status->save();
                                     $result = Boxean13::getByBoxId($box->id);
                                     foreach ($result as $pack) {
-                                        \Log::debug('pack');
-                                        \Log::debug($pack);
+//                                        \Log::debug('pack');
+//                                        \Log::debug($pack);
                                         $boxPackage = Package::where('id', $pack->packages_id)->get()->first();
-                                        \Log::debug('package in box');
-                                        \Log::debug($boxPackage);
+//                                        \Log::debug('package in box');
+//                                        \Log::debug($boxPackage);
                                         array_push($packages, $boxPackage);
                                     }
                                     break;
@@ -88,23 +88,23 @@ class Invoice extends Model
                         break;
                 }
             }
-            \Log::debug('packages');
-            \Log::debug(json_encode($packages));
+//            \Log::debug('packages');
+//            \Log::debug(json_encode($packages));
 
             $ids = [];
-            \Log::debug(count($packages));
+//            \Log::debug(count($packages));
             foreach($packages as $item) {
-                \Log::debug('item');
-                \Log::debug($item);
-                \Log::debug($item->id);
+//                \Log::debug('item');
+//                \Log::debug($item);
+//                \Log::debug($item->id);
                 array_push($ids,$item->id);
             }
             // \Log::debug();
 
             $unique = count(array_unique($ids)) === count($packages);
 
-            \Log::debug('unique');
-            \Log::debug($unique);
+//            \Log::debug('unique');
+//            \Log::debug($unique);
 
             if (count($box_error) === 0 && count($package_error) === 0 && $unique ) {
 
@@ -113,15 +113,15 @@ class Invoice extends Model
                 foreach ($packages as $pack) {
                     $codedms = Packagedm::getByPackageId($pack->id);
                     foreach ($codedms as $codedm) {
-                        \Log::debug($codedm->codedm);
+//                        \Log::debug($codedm->codedm);
                         array_push($codedms_result, $codedm->codedm);
                     }
                 }
 
 
-                \Log::debug('erorrs');
-                \Log::debug($box_error);
-                \Log::debug($package_error);
+//                \Log::debug('erorrs');
+//                \Log::debug($box_error);
+//                \Log::debug($package_error);
                 $Invoice = new Invoice;
                 $Invoice->number = $invoice;
                 $Invoice->save();

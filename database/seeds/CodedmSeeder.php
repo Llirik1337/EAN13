@@ -18,13 +18,15 @@ class CodedmSeeder extends Seeder
      */
     public function run()
     {
-        $company = factory(Company::class)->create();
-        for ($i = 0; $i < 20; $i++) {
-            factory(Codedm::class, 20)->create([
-                'codeean13_id' =>  factory(Codeean13::class)->create([
-                    'company_id' => $company->id
-                ])
-            ]);
+        for ($j = 0; $j < 20; $j++) {
+            $company = factory(Company::class)->create();
+            for ($i = 0; $i < 20; $i++) {
+                factory(Codedm::class, 200)->create([
+                    'codeean13_id' => factory(Codeean13::class)->create([
+                        'company_id' => $company->id
+                    ])
+                ]);
+            }
         }
 
         // DB::table('user_types')->insert([

@@ -19,7 +19,7 @@ class Codeean13Controller extends Controller
      */
     public function index()
     {
-        \Log::debug('message');
+//        \Log::debug('message');
     }
 
     /**
@@ -35,8 +35,8 @@ class Codeean13Controller extends Controller
 
     public function add(Request $request)
     {
-        \Log::debug(__CLASS__ . "->" . __FUNCTION__);
-        \Log::debug($request->data);
+//        \Log::debug(__CLASS__ . "->" . __FUNCTION__);
+//        \Log::debug($request->data);
         if ($request->data === null) {
             return response()->json(['msg' => 'missing argument']);
         } else if (!is_array($request->data)) {
@@ -47,7 +47,7 @@ class Codeean13Controller extends Controller
         $error_response = [];
         $codeean13 = [];
         foreach ($data as $key => $element) {
-            \Log::debug($element);
+//            \Log::debug($element);
 
 
 
@@ -64,9 +64,9 @@ class Codeean13Controller extends Controller
                 $tovar = $element['tovar'];
                 $company = $element['company'];
 
-                \Log::debug($code);
-                \Log::debug($tovar);
-                \Log::debug($company);
+//                \Log::debug($code);
+//                \Log::debug($tovar);
+//                \Log::debug($company);
                 array_push($codeean13, Codeean13::add($code, $tovar, $company));
             }
         }
@@ -85,7 +85,7 @@ class Codeean13Controller extends Controller
         // \Log::debug($code);
         // \Log::debug($request->all());
         $codeean13 = Codeean13::getByCode($code);
-        \Log::debug(json_encode($codeean13));
+//        \Log::debug(json_encode($codeean13));
         return response()->json(['codeean13' => $codeean13]);
     }
 
@@ -98,40 +98,24 @@ class Codeean13Controller extends Controller
      */
     public function update(Request $request)
     {
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
         try {
-            // \Log::debug(__CLASS__ . "->" . __FUNCTION__);
-            // \Log::debug($request->data);
-            $validateData = $request->validate(['data'=>'require']);
-            $data = $request->data;
-//            if ($data === null || $data["old"] === null || $data["new"] === null) {
-//                Log::debug('!!!');
-//                throw new Error();
-//            }
-
-
-            $old = $data['old'];
-            $new = $data['new'];
-
-            // \Log::debug($old);
-            // \Log::debug($new);
-
-            if (count($old) !== count($new)) {
-                throw new Error();
-            }
+            $validateData = $request->validate(['data'=> 'required']);
+            $input = $request->all();
+            $data = $input['data'];
 
             $errors = [];
-            for ($i = 0; $i < count($old); $i++) {
-                if (!Codeean13::updateCode($old[$i], $new[$i])) {
-                    array_push($errors, [$old[$i], $new[$i]]);
+            foreach ($data as $codes) {
+                if (!Codeean13::updateCode($codes['old'], $codes['new'])) {
+                    array_push($errors, [$codes['old'], $codes['new']]);
                 }
             }
             return response()->json(["errors" => $errors], 200);
         } catch (Exception $e) {
+            Log::debug(json_encode($e));
             return response()->json("Error request", 400);
         }
-        // foreach($old as $code) {
-        //     Codeean13::updateCode()
-        // }
     }
 
     /**
@@ -146,14 +130,14 @@ class Codeean13Controller extends Controller
     }
 
     public function getAllCodedm(Request $request) {
-        Log::debug(__CLASS__);
-        Log::debug(__FUNCTION__);
+//        Log::debug(__CLASS__);
+//        Log::debug(__FUNCTION__);
         $validateData = $request->validate(['codeean'=> 'required']);
         $input = $request->all();
         $codeean = $input['codeean'];
         $ean = Codeean13::getByCode($codeean);
         $result = Codedm::getByStatus($ean->id,null);
-        Log::debug(json_encode($result));
+//        Log::debug(json_encode($result));
         return response()->json(['data'=>$result]);
     }
 
@@ -164,8 +148,8 @@ class Codeean13Controller extends Controller
 
     public function getStatistics(Request $request)
     {
-        Log::debug(__CLASS__);
-        Log::debug(__FUNCTION__);
+//        Log::debug(__CLASS__);
+//        Log::debug(__FUNCTION__);
         \Log::debug('user');
         \Log::debug(json_encode(Auth::id()));
         return response()->json(Codeean13::getStatisticsByCompanyId(auth()->user()->company_id));

@@ -42,7 +42,6 @@ export default {
   },
   data: function() {
     return {
-      // canvas: null
       code15: "",
       code16: ""
     };
@@ -68,18 +67,16 @@ updated() {
     },
 
     generateBarcode(value) {
-        // console.log(value)
-      bwipjs.toCanvas(this.$refs.barcode, {
-        bcid: "gs1datamatrix",
-        text: this.modValue(value),
-        height: 100,
-        includetext: true,
-        textxalign: "center"
-      });
+        try {
+            bwipjs.toCanvas(this.$refs.barcode, {
+                bcid: "datamatrix",
+                scale: 4,
+                text: value,
+            });
+        } catch (e) {
+            console.log(e);
+        }
     },
-    modValue(value) {
-      return "\x1D" + value.slice(0, 2) + ")" + value.slice(2);
-    }
   }
 };
 </script>

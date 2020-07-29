@@ -8,8 +8,8 @@ class BoxController extends Controller
 {
     public function store(Request $request)
     {
-        \Log::debug('ean');
-        \Log::debug($request);
+//        \Log::debug('ean');
+//        \Log::debug($request);
         $codeean13 = $request->codeean13;
         $msg = 'error missing ean13 code array';
         if($codeean13 !== null) {

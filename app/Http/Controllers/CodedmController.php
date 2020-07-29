@@ -36,33 +36,33 @@ class CodedmController extends Controller
      */
     public function show(Request $request)
     {
-        \Log::debug('$request->codeean13_id');
-        \Log::debug($request->codeean13_id);
+//        \Log::debug('$request->codeean13_id');
+//        \Log::debug($request->codeean13_id);
         $codedm = Codedm::getCodeDmByCodeEan13Id($request->codeean13_id);
         if ($codedm !== null) {
             $status = $codedm->Status()->create(['name' => 'Print']);
-            \Log::debug('status');
-            \Log::debug($status);
+//            \Log::debug('status');
+//            \Log::debug($status);
             $status->save();
             $codedm->status_id = $status->id;
             $codedm->save();
         }
-        \Log::debug('store');
-        \Log::debug(json_encode($codedm));
+//        \Log::debug('store');
+//        \Log::debug(json_encode($codedm));
 
         return response()->json(['codedm' => $codedm]);
     }
 
     public function add(Request $request)
     {
-	\Log::debug($request->all());
+//	\Log::debug($request->all());
         if($request->data === null) {
            return response()->json(['error'=>'missing argument']);
         } else if (!is_array($request->data)) {
           return response()->json(['error'=>'argument is not array']);
         }
-         \Log::debug(__CLASS__ . "->" . __FUNCTION__);
-         \Log::debug(json_encode($request->data));
+//         \Log::debug(__CLASS__ . "->" . __FUNCTION__);
+//         \Log::debug(json_encode($request->data));
 
         $error = [];
 
@@ -94,8 +94,8 @@ class CodedmController extends Controller
 
     public function getByCode(Request $request)
     {
-        \Log::debug('$request->code');
-        \Log::debug($request->code);
+//        \Log::debug('$request->code');
+//        \Log::debug($request->code);
 
         $codedm = Codedm::getByCode($request->code);
 
@@ -112,7 +112,7 @@ class CodedmController extends Controller
     public function getByEanDM(Request $request){
         $request->validate(['codeean_id'=> 'required','codedm'=> 'required']);
         $input = $request->all();
-        Log::debug($input);
+//        Log::debug($input);
         $codeeanId = $input['codeean_id'];
         $codedm = $input['codedm'];
         $result = Codedm::getByCodeeanId($codedm, $codeeanId);

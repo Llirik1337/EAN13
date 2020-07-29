@@ -42,8 +42,8 @@ class Box extends Model
     public static function add($codeean13)
     {
 
-        \Log::debug('codeean13');
-        \Log::debug($codeean13);
+//        \Log::debug('codeean13');
+//        \Log::debug($codeean13);
 
         if (count($codeean13) > 0) {
 

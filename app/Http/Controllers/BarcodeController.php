@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
-// 
+//
 use App\Http\Controllers\Semacode;
 class BarcodeController extends Controller
 {
@@ -43,9 +43,9 @@ class BarcodeController extends Controller
 
     public function getBarcode(Request $request)
     {
-        \Log::debug('getBarcode');
-        \Log::debug(Semacode::class);
-        \Log::debug($request->codedm);
+//        \Log::debug('getBarcode');
+//        \Log::debug(Semacode::class);
+//        \Log::debug($request->codedm);
         // $text = $request->codedm;
         $text = "asdsadsdasasassadasdsaas";
         $type = 'svg';

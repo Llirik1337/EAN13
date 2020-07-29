@@ -23,7 +23,7 @@ class Codeean13 extends Model
 
     public static function getByCode($code)
     {
-        \Log::debug('getByCode');
+//        \Log::debug('getByCode');
 
         return static::where('code', $code)->where('company_id', Auth::user()->company->id)->get()->first();
     }
@@ -34,13 +34,13 @@ class Codeean13 extends Model
 
     public static function add($code, $tovar = null, $company = null)
     {
-        \Log::debug(__CLASS__ . "->" . __FUNCTION__);
+//        \Log::debug(__CLASS__ . "->" . __FUNCTION__);
         $codeean13 = static::firstOrCreate(['code' => $code]);
         if ($tovar !== null)
             $codeean13->tovarname = $tovar;
         if ($company !== null && $codeean13->company_id === null)
             $codeean13->company_id = Company::firstOrCreate(['name' => $company])->id;
-        \Log::debug(json_encode($codeean13));
+//        \Log::debug(json_encode($codeean13));
         $codeean13->save();
         return $codeean13;
     }
@@ -57,17 +57,17 @@ class Codeean13 extends Model
     }
 
     public static function getAllDMByStatus($status = null) {
-        Log::debug(__CLASS__);
-        Log::debug(__FUNCTION__);
+//        Log::debug(__CLASS__);
+//        Log::debug(__FUNCTION__);
         $eancodes = static::where('company_id', Auth::user()->company->id)->get()->all();
         $result = [];
         foreach ($eancodes as $eancode) {
-            Log::debug(json_encode($eancode));
+//            Log::debug(json_encode($eancode));
             $codedms =  Codedm::getByStatus($eancode->id, $status);
             if(count($codedms))
                 array_push($result,['eancode'=>$eancode->code,'codes'=>$codedms, 'tovarName'=>$eancode->tovarname]);
         }
-        Log::debug(json_encode($result));
+//        Log::debug(json_encode($result));
         return $result;
     }
 
@@ -84,19 +84,19 @@ class Codeean13 extends Model
 
     public static function getStatisticsByCompanyId($company_id)
     {
-        \Log::debug($company_id);
+//        \Log::debug($company_id);
         $codeean13 = static::where('company_id', $company_id)->get();
         $result = $codeean13->map(function ($item) {
             if ($item !== null) {
-                \Log::debug($item->id);
+//                \Log::debug($item->id);
                 $statistic = static::getStatisticByCodeeanId($item->id);
-                \Log::debug($statistic);
+//                \Log::debug($statistic);
                 $item['statistics'] = $statistic;
                 return $item;
             }
         });
-        \Log::debug('$codeean13 result');
-        \Log::debug($result);
+//        \Log::debug('$codeean13 result');
+//        \Log::debug($result);
         return $result;
     }
 }

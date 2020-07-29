@@ -32,7 +32,7 @@ class Packagedm extends Model
         if (count($codedms) > 0) {
             foreach ($codedms as $codedm_item) {
                 $codedm = Codedm::getByCode($codedm_item['codedm']);
-                \Log::debug($codedm);
+//                \Log::debug($codedm);
                 if ($codedm === null) {
                     array_push($errors_codedms, ['msg' => 'Can\'t not find DM', 'DM' => $codedm_item['codedm']]);
                 } else if ($codedm->status === null) {
@@ -51,10 +51,10 @@ class Packagedm extends Model
 
     public static function add($package_id,$codedms)
     {
-        \Log::debug('$codedms');
-        \Log::debug(json_encode($codedms));
-        \Log::debug('$package_id');
-        \Log::debug($package_id);
+//        \Log::debug('$codedms');
+//        \Log::debug(json_encode($codedms));
+//        \Log::debug('$package_id');
+//        \Log::debug($package_id);
 
         $result = ['result'=> true, 'packagedms' => []];
         foreach ($codedms as $codedm_item) {
@@ -68,8 +68,8 @@ class Packagedm extends Model
 
         }
 
-        \Log::debug('result');
-        \Log::debug(json_encode($result));
+//        \Log::debug('result');
+//        \Log::debug(json_encode($result));
         return $result;
     }
 }

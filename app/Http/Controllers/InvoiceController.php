@@ -31,11 +31,11 @@ class InvoiceController extends Controller
 
     public function get(Request $request)
     {
-        \Log::debug('invoice');
-        \Log::debug($request->invoice);
+//        \Log::debug('invoice');
+//        \Log::debug($request->invoice);
         $result = Invoice::getByInvoice($request->invoice);
-        \Log::debug('result');
-        \Log::debug(json_encode($result));
+//        \Log::debug('result');
+//        \Log::debug(json_encode($result));
         return response()->json($result);
     }
 
