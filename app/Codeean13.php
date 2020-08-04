@@ -73,13 +73,17 @@ class Codeean13 extends Model
 
     public static function updateCode($old_code, $new_code)
     {
-        $code = static::where('code', $old_code)->get()->first();
-        if ($code === null) {
+        try {
+            $code = static::where('code', $old_code)->get()->first();
+            if ($code === null) {
+                return false;
+            }
+            $code->code = $new_code;
+            $code->save();
+            return true;
+        } catch(\Exception $exception) {
             return false;
         }
-        $code->code = $new_code;
-        $code->save();
-        return true;
     }
 
     public static function getStatisticsByCompanyId($company_id)

@@ -13,7 +13,8 @@ class DevSeed extends Seeder
         $this->call([
             CodedmSeeder::class,
             CreateUsersTypes::class,
-            CreateAdmin::class
+            CreateAdmin::class,
+            RussianUserSeed::class
         ]);
     }
 }

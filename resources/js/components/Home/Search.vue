@@ -9,6 +9,9 @@
         layout="vertical"
       >
         <a-form-item label="Company">{{user.company.name}}</a-form-item>
+        <a-form-item label="External number" v-if="!user.company.external">
+            <a-auto-complete :data-source="getExternalsNumbers" v-model="selectExternal"></a-auto-complete>
+        </a-form-item>
         <a-form-item label="Printing directly to the printer">
           <a-checkbox v-model="toPrint" />
         </a-form-item>
@@ -60,7 +63,6 @@ export default {
           span: 20
         }
       },
-
       States: {
         EAN13: {
           EAN13Msg: "",
@@ -82,7 +84,8 @@ export default {
       isEndInputCode: false,
       state: "EAN13",
       validateDM: false,
-      help: ""
+      help: "",
+        selectExternal: null,
     };
   },
   provide: function() {
@@ -100,9 +103,18 @@ export default {
   },
   mounted() {
     this.Init();
+      console.log(this.getExternalsNumbers)
   },
   computed: {
-    ...mapGetters(["getUser"])
+    ...mapGetters(["getUser"]),
+      getExternalsNumbers() {
+        return  this.user.company.cargo.map(({number:text, id:value})=> {
+            return {
+                text,
+                value: value.toString()
+            }
+        })
+      }
   },
 
   methods: {
@@ -357,16 +369,20 @@ export default {
 
     async findCodeEan13(val) {
         try {
-            const result = await this.searchCodeEan13(val)
-                    this.setCodeEAN13(result);
-                    this.setCodeEAN13Msg(result.code);
-                    try {
-                        const res = await this.searchCodeDM(this.getCodeEAN13().id)
-                        this.setCodeDM(res);
-                        this.showBarcode();
-                    } catch (e) {
-                        this.setCodeEAN13Msg('did’t find free DM');
-                    }
+            if(!this.selectExternal) {
+                const result = await this.searchCodeEan13(val)
+                this.setCodeEAN13(result);
+                this.setCodeEAN13Msg(result.code);
+                try {
+                    const res = await this.searchCodeDM(this.getCodeEAN13().id)
+                    this.setCodeDM(res);
+                    this.showBarcode();
+                } catch (e) {
+                    this.setCodeEAN13Msg('did’t find free DM');
+                }
+            } else {
+
+            }
         } catch (e) {
             this.setCodeEAN13Msg('this EAN is not registered');
         }

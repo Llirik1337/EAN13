@@ -63,14 +63,9 @@ class User extends Authenticatable
         if($user === null) {
 
             $compnay_result = Company::firstOrCreate(['name'=> $company]);
-//            \Log::debug('company');
-
             $compnay_result->name = $company;
             $compnay_result->save();
-//            \Log::debug($compnay_result);
             $right =UserType::where('name', $right)->get()->first();
-//            \Log::debug('right');
-//            \Log::debug($right);
             $user = new User;
             $user->name = $login;
             $user->password = bcrypt($password);

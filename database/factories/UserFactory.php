@@ -28,6 +28,7 @@ $factory->define(User::class, function (Faker $faker) {
     ];
 });
 
+
 // $factory->state(User::class, 'admin', function($faker) {
 //     return [
 //         'user_types_id' => 1

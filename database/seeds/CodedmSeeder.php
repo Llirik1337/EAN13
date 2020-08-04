@@ -3,12 +3,10 @@
 use Illuminate\Database\Seeder;
 use App\Codedm;
 use App\Company;
-use Illuminate\Support\Facades\DB;
 use App\Codeean13;
-use App\UserType;
-use App\TypeRight;
-use App\User;
-use App\Right;
+use App\Cargo;
+use Illuminate\Support\Facades\Log;
+use App\CargoCodedm;
 class CodedmSeeder extends Seeder
 {
     /**
@@ -18,81 +16,32 @@ class CodedmSeeder extends Seeder
      */
     public function run()
     {
-        for ($j = 0; $j < 20; $j++) {
             $company = factory(Company::class)->create();
+            Log::debug(__CLASS__);
+            Log::debug(__FUNCTION__);
             for ($i = 0; $i < 20; $i++) {
-                factory(Codedm::class, 200)->create([
+                factory(Codedm::class, 50)->create([
                     'codeean13_id' => factory(Codeean13::class)->create([
                         'company_id' => $company->id
                     ])
                 ]);
+
             }
-        }
+            $company = factory(Company::class)->create(['external'=>false]);
+            for ($i = 0; $i < 20; $i++) {
+                $codedms = factory(Codedm::class, 50)->create([
+                    'codeean13_id' => factory(Codeean13::class)->create([
+                        'company_id' => $company->id
+                    ])
+                ]);
 
-        // DB::table('user_types')->insert([
-        //     'name' => 'admin'
-        // ]);
+                $number = random_int(100,1000);
+                $cargo = factory(Cargo::class)->create(['company_id'=>$company->id,'number'=>$number]);
+                foreach ($codedms as $code) {
 
-        // DB::table('user_types')->insert([
-        //     'name' => 'user'
-        // ]);
-
-        // DB::table('type_rights')->insert([
-
-        // ]);
-
-        // $type_admin = factory(UserType::class)->create([
-        //     'name' => 'admin'
-        // ]);
-
-        // $type_user = factory(UserType::class)->create([
-        //     'name' => 'user'
-        // ]);
-
-
-        // $right_adminPanel = factory(Right::class)->create([
-        //     'name' => 'adminPanel'
-        // ]);
-        // $right_marking = factory(Right::class)->create([
-        //     'name' => 'marking'
-        // ]);
-        // $right_statistics = factory(Right::class)->create([
-        //     'name' => 'statistics'
-        // ]);
-
-        // factory(TypeRight::class)->create([
-        //     'right_id'=> $right_adminPanel->id,
-        //     'user_types_id'=>$type_admin->id,
-        // ]);
-        // factory(TypeRight::class)->create([
-        //     'right_id'=> $right_marking->id,
-        //     'user_types_id'=>$type_admin->id,
-        // ]);
-        // factory(TypeRight::class)->create([
-        //     'right_id'=>$right_statistics->id,
-        //     'user_types_id'=>$type_admin->id,
-        // ]);
-
-        // factory(TypeRight::class)->create([
-        //     'right_id'=> $right_marking->id,
-        //     'user_types_id'=>$type_user->id,
-        // ]);
-        // factory(TypeRight::class)->create([
-        //     'right_id'=>$right_statistics->id,
-        //     'user_types_id'=>$type_user->id,
-        // ]);
-
-        // factory(User::class)->create([
-        //     'name' => 'admin',
-        //     'password' => bcrypt('admin'),
-        //     'company_id' => $company->id,
-        //     'user_types_id' => $type_admin->id
-        // ]);
-
-        // DB::table('users')->insert([
-        //     'name' => 'admin',
-        //     'password' => bcrypt('admin'),
-        //     'company_id' => $company->id
-        // ]);
+                    $code->cargo_id = $cargo->id;
+                    $code->save();
+                }
+            }
     }
 }

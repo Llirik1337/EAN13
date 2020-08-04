@@ -108,13 +108,13 @@ class Codeean13Controller extends Controller
             $errors = [];
             foreach ($data as $codes) {
                 if (!Codeean13::updateCode($codes['old'], $codes['new'])) {
-                    array_push($errors, [$codes['old'], $codes['new']]);
+                    array_push($errors, ["old"=>$codes['old'],"new"=>$codes['new'] ]);
                 }
             }
             return response()->json(["errors" => $errors], 200);
         } catch (Exception $e) {
             Log::debug(json_encode($e));
-            return response()->json("Error request", 400);
+            return response()->json(json_encode($e), 400);
         }
     }
 

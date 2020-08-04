@@ -40,6 +40,7 @@ Route::prefix('codedm')->group(function () {
     Route::post('add', 'CodedmController@add');
     Route::post('checking', 'CodedmController@getByEanDM');
     Route::post('setStatus', 'CodedmController@setStatus');
+    Route::post('getStatus', 'CodedmController@getStatus');
 });
 
 Route::prefix('status')->group(function () {

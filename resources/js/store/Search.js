@@ -32,7 +32,7 @@ export default {
                 // console.log(codeean13_id);
 
                 req.post("codedm/by", {
-                    codeean13_id: codeean13_id
+                    codeean13_id
                 }).then(response => {
                     const codedm = response.data.codedm;
                     if (codedm !== null) {
