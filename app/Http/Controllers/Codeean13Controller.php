@@ -81,11 +81,10 @@ class Codeean13Controller extends Controller
      */
     public function show(Request $request)
     {
-        $code = $request->get('code');
-        // \Log::debug($code);
-        // \Log::debug($request->all());
-        $codeean13 = Codeean13::getByCode($code);
-//        \Log::debug(json_encode($codeean13));
+        $input = $request->all();
+        $code = $input['code'];
+        $cargo_id = $input['cargo_id'];
+        $codeean13 = Codeean13::getByCode($code,$cargo_id);
         return response()->json(['codeean13' => $codeean13]);
     }
 
@@ -135,8 +134,9 @@ class Codeean13Controller extends Controller
         $validateData = $request->validate(['codeean'=> 'required']);
         $input = $request->all();
         $codeean = $input['codeean'];
+        $cargo_id = $input['cargo_id'];
         $ean = Codeean13::getByCode($codeean);
-        $result = Codedm::getByStatus($ean->id,null);
+        $result = Codedm::getByStatus($ean->id,null,$cargo_id);
 //        Log::debug(json_encode($result));
         return response()->json(['data'=>$result]);
     }
@@ -148,11 +148,10 @@ class Codeean13Controller extends Controller
 
     public function getStatistics(Request $request)
     {
-//        Log::debug(__CLASS__);
-//        Log::debug(__FUNCTION__);
-        \Log::debug('user');
-        \Log::debug(json_encode(Auth::id()));
-        return response()->json(Codeean13::getStatisticsByCompanyId(auth()->user()->company_id));
-        // Codedm::getByStatus("Print");
+        $input = $request->all();
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
+        Log::debug(json_encode($input));
+        return response()->json(Codeean13::getStatisticsByCompanyId(auth()->user()->company_id,$input['cargo_id']));
     }
 }

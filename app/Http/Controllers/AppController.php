@@ -19,14 +19,13 @@ class AppController extends Controller
         $user = Auth::user();
         if ($user !== null) {
             $user->user_types;
-            $user->company;
-            $user->company->cargo;
-            foreach ($user->company->cargo as $cargo) {
+            foreach ($user->company->codeean13 as $ean) {
+                $ean->codedm;
+                foreach ($ean->cargo as $cargo) {
                 $cargo->codedm;
+                }
             }
         }
-//        \Log::debug('USER');
-//        \Log::debug($user);
         return response()->json(['user' => $user], 200);
     }
 
@@ -34,9 +33,6 @@ class AppController extends Controller
     {
 
         $credentials = $request->only('name', 'password');
-
-//        \Log::debug(json_encode($credentials));
-//        \Log::debug(User::get()->first());
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $user->company;

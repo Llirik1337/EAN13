@@ -11,7 +11,7 @@ class Company extends Model
     protected $table = 'company';
     protected $fillable = ['name'];
 
-    public function cargo() {
-        return $this->hasMany(Cargo::class);
+    public function codeean13() {
+        return $this->hasMany(Codeean13::class);
     }
 }

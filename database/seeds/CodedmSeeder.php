@@ -29,19 +29,39 @@ class CodedmSeeder extends Seeder
             }
             $company = factory(Company::class)->create(['external'=>false]);
             for ($i = 0; $i < 20; $i++) {
-                $codedms = factory(Codedm::class, 50)->create([
-                    'codeean13_id' => factory(Codeean13::class)->create([
-                        'company_id' => $company->id
-                    ])
+
+                $number = random_int(100, 1000);
+
+
+                $cargo = factory(Cargo::class)->create(['number' => $number]);
+                $codeean13 = factory(Codeean13::class)->create([
+                    'company_id' => $company->id
                 ]);
-
-                $number = random_int(100,1000);
-                $cargo = factory(Cargo::class)->create(['company_id'=>$company->id,'number'=>$number]);
+                $codedms = factory(Codedm::class, 10)->create([
+                    'codeean13_id' => $codeean13->id
+                ]);
+                $cargo->codeean()->save($codeean13);
                 foreach ($codedms as $code) {
-
                     $code->cargo_id = $cargo->id;
                     $code->save();
                 }
+                $codeean13 = factory(Codeean13::class)->create([
+                    'company_id' => $company->id
+                ]);
+                $codedms = factory(Codedm::class, 10)->create([
+                    'codeean13_id' => $codeean13->id
+                ]);
+                $cargo->codeean()->save($codeean13);
+                foreach ($codedms as $code) {
+                    $code->cargo_id = $cargo->id;
+                    $code->save();
+                }
+
+
+
+                $codedms = factory(Codedm::class, 25)->create([
+                    'codeean13_id' => $codeean13->id
+                ]);
             }
     }
 }

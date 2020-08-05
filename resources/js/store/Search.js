@@ -2,21 +2,23 @@ import req from "../axiosInit";
 
 export default {
     state: {
-        EAN13: ""
+        EAN13: "",
     },
     mutations: {
         setEAN13(state, code) {
             state.EAN13 = code;
-        }
+        },
     },
     getters: {},
     actions: {
-        async searchCodeEan13({ commit }, code) {
+        async searchCodeEan13({ commit }, { code, cargo_id }) {
             try {
+                console.log(cargo_id);
                 const Code = code.substring(0, 13);
                 const response = await req.post("codeean13/by", {
                     code: Code,
-                })
+                    cargo_id,
+                });
                 const codeean13 = response.data.codeean13;
                 commit("setEAN13", codeean13);
                 if (codeean13 !== null) {
@@ -26,14 +28,16 @@ export default {
                 throw e;
             }
         },
-        searchCodeDM({ commit }, codeean13_id) {
+        searchCodeDM({ commit, getters }, codeean13_id) {
             return new Promise((resolve, reject) => {
-                // console.log('searchCodeDM');
-                // console.log(codeean13_id);
-
+                const cargo_id =
+                    parseInt(getters.getSelectedCargo) === -1
+                        ? null
+                        : parseInt(getters.getSelectedCargo);
                 req.post("codedm/by", {
-                    codeean13_id
-                }).then(response => {
+                    codeean13_id,
+                    cargo_id,
+                }).then((response) => {
                     const codedm = response.data.codedm;
                     if (codedm !== null) {
                         resolve(codedm);
@@ -46,14 +50,15 @@ export default {
                 // console.log('searchCodeDMByCode');
                 console.log(code);
                 req.post("codedm/byCode", {
-                    code: code
-                }).then(response => {
+                    code: code,
+                }).then((response) => {
                     // let msg;
                     console.log(response);
                     resolve(response);
                 });
             });
-        }
+        },
+
         // getBarcode(ctx, codedm) {
         //     return new Promise((resolve, reject) => {
         //         console.log('getBarcode');
@@ -72,5 +77,5 @@ export default {
 
         //     })
         // }
-    }
+    },
 };

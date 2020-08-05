@@ -16,8 +16,8 @@ class CreateCargosTable extends Migration
         Schema::create('cargos', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('number');
-            $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('company');
+//            $table->unsignedBigInteger('codeean13_id');
+//            $table->foreign('codeean13_id')->references('id')->on('codeean13');
             $table->timestamps();
         });
     }

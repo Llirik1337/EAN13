@@ -1,57 +1,11 @@
 import req from "../axiosInit";
 
-// req.post("codeean13/add", {
-//     data: [
-//         {
-//             code: "123123",
-//             tovar: "test_tovar1",
-//         },
-//         {
-//             code: "33333",
-//             tovar: "test_tovar1",
-//             company: "lol1"
-//         },
-//         {
-//             code: "444444",
-//             tovar: "test_tovar",
-//         },
-//         {
-//             code: "6666666",
-//             tovar: "test_tovar",
-//             company: "lol3"
-//         },
-//         {
-//             code: "777777",
-//             tovar: "test_tovar",
-//             company: "lol4"
-//         }
-//     ]
-// }).then(res => {
-//     console.log(res);
-
-// });
-
-// req.post("codedm/add", {
-//     data: [
-//         {
-//             code: "123123",
-//             // codeean13: "test_tovar1",
-//         },
-//         {
-//             code: "33333",
-//             codeean13: "test_tovar1",
-//         },
-//     ]
-// }).then(res => {
-//     console.log(res);
-
-// });
-
 export default {
     state: {
         user: null,
         loading: false,
-        initiated: false
+        initiated: false,
+        selectedCargo: null,
     },
     mutations: {
         setIsLogin(state) {
@@ -70,7 +24,10 @@ export default {
             state.user = null;
             state.loading = false;
             state.initiated = false;
-        }
+        },
+        setSelectedCargo(state, cargo) {
+            state.selectedCargo = cargo;
+        },
     },
     getters: {
         getUser(state) {
@@ -84,12 +41,18 @@ export default {
         },
         getReq() {
             return state.req;
-        }
+        },
+        getSelectedCargo(state) {
+            return state.selectedCargo;
+        },
     },
     actions: {
+        updateSelectedCargo({ commit }, cargo) {
+            commit("setSelectedCargo", cargo);
+        },
         Init(ctx) {
             return new Promise((resolve, reject) => {
-                req.post("auth/init").then(response => {
+                req.post("auth/init").then((response) => {
                     // console.log('Init');
                     // console.log(response.data);
                     console.log(response.data);
@@ -106,17 +69,16 @@ export default {
                     // console.log(data);
                     req.post("auth/login", {
                         name: data.name,
-                        password: data.password
+                        password: data.password,
                     }).then(
-                        response => {
+                        (response) => {
                             // console.log(response);
-
 
                             ctx.commit("setUser", response.data);
                             ctx.commit("setIsLogin");
                             resolve(true);
                         },
-                        response => {
+                        (response) => {
                             reject();
                         }
                     );
@@ -126,16 +88,17 @@ export default {
         LogOut({ commit }) {
             return new Promise((resolve, reject) => {
                 // console.log('LogOut');
+                commit("setSelectedCargo", null);
                 req.post("auth/logout")
-                    .then(response => {
+                    .then((response) => {
                         commit("setLogOut");
                         // console.log(response);
                         resolve(true);
                     })
-                    .catch(e => {
+                    .catch((e) => {
                         // console.log(e);
                     });
             });
-        }
-    }
+        },
+    },
 };

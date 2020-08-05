@@ -43,6 +43,10 @@ Route::prefix('codedm')->group(function () {
     Route::post('getStatus', 'CodedmController@getStatus');
 });
 
+Route::prefix('cargo')->group(function () {
+    Route::post('store', 'CargoController@store');
+});
+
 Route::prefix('status')->group(function () {
     Route::get('set', 'StatusController@store');
 });

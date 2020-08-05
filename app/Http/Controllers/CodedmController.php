@@ -36,13 +36,12 @@ class CodedmController extends Controller
      */
     public function show(Request $request)
     {
-//        \Log::debug('$request->codeean13_id');
-//        \Log::debug($request->codeean13_id);
-        $codedm = Codedm::getCodeDmByCodeEan13Id($request->codeean13_id);
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
+        $input = $request->all();
+        $codedm = Codedm::getCodeDmByCodeEan13Id($input['codeean13_id'],$input['cargo_id']);
         if ($codedm !== null) {
             $status = $codedm->Status()->create(['name' => 'Print']);
-//            \Log::debug('status');
-//            \Log::debug($status);
             $status->save();
             $codedm->status_id = $status->id;
             $codedm->save();
@@ -128,6 +127,19 @@ class CodedmController extends Controller
         $codedm_id = $input['codedm_id'];
         $status = $input['status'];
         Codedm::setStatus($codedm_id, $status);
+    }
+
+    public function getStatus(Request $request) {
+        $request->validate(['codedms'=>'required']);
+        $input = $request->all();
+        $result = [];
+        foreach ($input['codedms'] as $code) {
+            $findDm = Codedm::getByCode($code);
+            if ($findDm){
+                array_push($result, ['status'=>$findDm->status ? $findDm->status->name: null, 'code'=>$findDm->code, 'cargo_id'=>$findDm->cargo_id ]);
+            }
+        }
+        return response()->json($result);
     }
 
     /**

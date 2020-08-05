@@ -4,19 +4,24 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 
 class Codedm extends Model
 {
     protected $table = 'codedm';
 
-    public  function Status()
+    public  function status()
     {
         return $this->belongsTo(Statuscodedm::class);
     }
 
-    public function Codeean13()
+    public function codeean13()
     {
         return $this->belongsTo(Codeean13::class);
+    }
+    public function cargo()
+    {
+        return $this->belongsTo(Cargo::class);
     }
 
     public static function setStatus($id, $textStatus = 'Print') {
@@ -39,11 +44,9 @@ class Codedm extends Model
         $codedm->save();
     }
 
-    public static function getCodeDmByCodeEan13Id($id)
+    public static function getCodeDmByCodeEan13Id($id, $cargo_id = null)
     {
-        \Log::debug('id');
-        \Log::debug($id);
-        return static::where('codeean13_id', $id)->where('status_id', null)->get()->first();
+        return static::where('codeean13_id', $id)->where('status_id', null)->where('cargo_id', $cargo_id)->get()->first();
     }
 
     public static function getByCodeeanId($codeDm,$codeeanId) {
@@ -57,7 +60,7 @@ class Codedm extends Model
 
     public static function getByCode($code)
     {
-        return static::where('code', $code)
+        return static::where('code','like', $code.'%')
             // ->where('status_id','!=', null)
             ->with(['status', 'codeean13'])
             ->get()
@@ -81,19 +84,23 @@ class Codedm extends Model
     }
 
 
-    public static function getByStatus($codeean13,$status = null)
+    public static function getByStatus($codeean13,$status = null,$cargo_id=null)
     {
-        if ($status !== null) {
-            $codedm = static::where('codeean13_id', $codeean13)->where('status_id','!=', null)->with('status')->get();
-            $codedmByStatus = $codedm->filter(function($item) use ($status) {
-                if($item !== null && $item->status->name === $status) {
-                    return $item;
-                }
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
+        Log::debug($cargo_id);
+        $codedm = static::where('codeean13_id', $codeean13);
+        if($status) {
+            $codedm->whereHas('status', function (Builder $query) use ($status) {
+                return $query->where('name', $status);
             });
-            return $codedmByStatus;
-        } else {
-            $codedm = static::where('codeean13_id', $codeean13)->where('status_id', null)->with('status')->get();
-            return $codedm;
         }
+        else {
+            $codedm->doesntHave('status');
+        }
+        $codedm = $codedm->where('cargo_id', $cargo_id);
+        $result = $codedm->get();
+        Log::debug(json_encode($result));
+        return $result;
     }
 }

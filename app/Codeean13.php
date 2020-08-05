@@ -5,7 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Company;
+use App\Statuscodedm;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 
 class Codeean13 extends Model
 {
@@ -20,12 +22,31 @@ class Codeean13 extends Model
         return $this->belongsTo(Company::class);
     }
 
-
-    public static function getByCode($code)
+    public function cargo()
     {
-//        \Log::debug('getByCode');
+        return $this->belongsToMany(Cargo::class, 'codeean13_cargos');
+    }
 
-        return static::where('code', $code)->where('company_id', Auth::user()->company->id)->get()->first();
+    public function codedm() {
+        return $this->hasMany(Codedm::class);
+    }
+    public function codedmDoesntHaveCargo() {
+        return $this->hasMany(Codedm::class)->where('cargo_id',null);
+    }
+
+    public static function getByCode($code, $cargo_id = null)
+    {
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
+        Log::debug($cargo_id);
+        $ean = static::where('code', $code)->where('company_id', Auth::user()->company->id)->get()->first();
+
+        if($ean && $cargo_id) {
+            $codes = $ean->codedm()->where('cargo_id', $cargo_id)->get();
+            Log::debug(json_encode($codes));
+        }
+        Log::debug(json_encode($ean));
+        return $ean;
     }
 
     public static function getAllCodedm($codeean) {
@@ -45,14 +66,17 @@ class Codeean13 extends Model
         return $codeean13;
     }
 
-    public static function getStatisticByCodeeanId($id)
+    public static function getStatisticByCodeeanId($id, $cargo_id = null)
     {
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
+        Log::debug($cargo_id);
         return [
-            'free' => Codedm::getByStatus($id)->count(),
-            'printed' => Codedm::getByStatus($id, "Print")->count(),
-            'inflicted' => Codedm::getByStatus($id, "Inflicted")->count(),
-            'package' => Codedm::getByStatus($id, "Package")->count(),
-            'invoice' => Codedm::getByStatus($id, "Invoice")->count(),
+            'free' => Codedm::getByStatus($id,null,$cargo_id)->count(),
+            'printed' =>  Codedm::getByStatus($id, 'Print',$cargo_id)->count(),
+            'inflicted' => Codedm::getByStatus($id, 'Inflicted',$cargo_id)->count(),
+            'package' =>  Codedm::getByStatus($id, 'Package',$cargo_id)->count(),
+            'invoice' => Codedm::getByStatus($id, 'Invoice',$cargo_id)->count(),
         ];
     }
 
@@ -86,21 +110,23 @@ class Codeean13 extends Model
         }
     }
 
-    public static function getStatisticsByCompanyId($company_id)
+    public static function getStatisticsByCompanyId($company_id, $cargo_id = null)
     {
-//        \Log::debug($company_id);
-        $codeean13 = static::where('company_id', $company_id)->get();
-        $result = $codeean13->map(function ($item) {
-            if ($item !== null) {
-//                \Log::debug($item->id);
-                $statistic = static::getStatisticByCodeeanId($item->id);
-//                \Log::debug($statistic);
-                $item['statistics'] = $statistic;
-                return $item;
-            }
-        });
-//        \Log::debug('$codeean13 result');
-//        \Log::debug($result);
-        return $result;
+        Log::debug(__CLASS__);
+        Log::debug(__FUNCTION__);
+        Log::debug($cargo_id);
+        $codeean13 = static::where('company_id', $company_id)->whereHas('codedm',function (Builder $query) use ($cargo_id) {
+           return $query->where('cargo_id', $cargo_id);
+        })->get();
+        Log::debug(json_encode($codeean13));
+
+            $result = $codeean13->map(function ($item) use ($cargo_id) {
+                if ($item !== null) {
+                    $statistic = static::getStatisticByCodeeanId($item->id, $cargo_id);
+                    $item['statistics'] = $statistic;
+                    return $item;
+                }
+            });
+            return $result;
     }
 }

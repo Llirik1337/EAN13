@@ -23,6 +23,8 @@ class VerifyCsrfToken extends Middleware
         'codeean13/add',
         'codeean13/update',
         'codedm/add',
+        'codedm/getStatus',
+        'cargo/store',
         'invoice/get'
     ];
 }
