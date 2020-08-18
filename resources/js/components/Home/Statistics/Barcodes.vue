@@ -1,44 +1,48 @@
 <template>
     <div>
-        <barcode v-for="item in codes" :key="Math.random()" :value="item.code" :tovar-name="tovarName" :codeean="codeean"/>
+        <barcode
+            v-for="item in codes"
+            :key="Math.random()"
+            :value="item.code"
+            :tovar-name="tovarName"
+            :codeean="codeean"
+        />
     </div>
 </template>
 
 <script>
-    import Barcode from "../Search/Barcode";
-    export default {
-        components: {
-            Barcode
+import Barcode from "../Search/Barcode";
+export default {
+    components: {
+        Barcode
+    },
+    props: {
+        codeean: {
+            type: String,
+            default: ""
         },
-        props: {
-            codeean: {
-              type: String,
-              default: ''
-            },
-            afterRender: {
-              type: Function,
-            },
-            codes: {
-                type: Array,
-                required: true
-            },
-            tovarName: {
-                type:String,
-                required: true
-            }
+        codes: {
+            type: Array,
+            required: true
         },
-        mounted() {
-          this.$nextTick(function () {
-              this.afterRender();
-          });
+        tovarName: {
+            type: String,
+            required: true
         }
+    },
+    mounted() {
+        this.$nextTick(function() {
+            // this.afterRender();
+            setTimeout(() => this.$emit("render"), 1000);
+        });
     }
+};
 </script>
 
 <style scoped>
-    @media print{
-        .new-page {
-            page-break-after: always;
-        }
+@media print {
+    .new-page {
+        page-break-after: always;
     }
+}
 </style>

@@ -84,12 +84,14 @@ class Codedm extends Model
     }
 
 
-    public static function getByStatus($codeean13,$status = null,$cargo_id=null)
+    public static function getByStatus($codeean13,$status = null,$cargo_id=null, $count=null)
     {
         Log::debug(__CLASS__);
         Log::debug(__FUNCTION__);
         Log::debug($cargo_id);
+        Log::debug($count);
         $codedm = static::where('codeean13_id', $codeean13);
+
         if($status) {
             $codedm->whereHas('status', function (Builder $query) use ($status) {
                 return $query->where('name', $status);
@@ -99,6 +101,9 @@ class Codedm extends Model
             $codedm->doesntHave('status');
         }
         $codedm = $codedm->where('cargo_id', $cargo_id);
+        if($count) {
+            $codedm->limit($count);
+        }
         $result = $codedm->get();
         Log::debug(json_encode($result));
         return $result;

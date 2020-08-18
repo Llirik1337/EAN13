@@ -135,14 +135,17 @@ class Codeean13Controller extends Controller
         $input = $request->all();
         $codeean = $input['codeean'];
         $cargo_id = $input['cargo_id'];
+        $count = $input['count'];
+        Log::debug($count);
         $ean = Codeean13::getByCode($codeean);
-        $result = Codedm::getByStatus($ean->id,null,$cargo_id);
-//        Log::debug(json_encode($result));
+        $result = Codedm::getByStatus($ean->id,null,$cargo_id, $count);
+        Log::debug($result);
         return response()->json(['data'=>$result]);
     }
 
     public function getAllFreeDMCode(Request $request) {
-        $result = Codeean13::getAllDMByStatus();
+        $input = $request->all();
+        $result = Codeean13::getAllDMByStatus(null, $input['cargo_id']);
         return response()->json(['data'=>$result]);
     }
 

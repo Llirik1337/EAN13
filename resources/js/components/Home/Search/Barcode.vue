@@ -35,41 +35,43 @@ export default {
     props: {
         codeean: {
             type: String,
-            default: "",
+            required: true
         },
         value: {
             required: true,
-            type: String,
+            type: String
         },
         tovarName: {
             required: true,
-            type: String,
+            type: String
         },
         fontWidth: {
             type: String,
-            default: "normal",
+            default: "normal"
         },
         fontSize: {
             type: Number,
-            default: 8,
-        },
+            default: 8
+        }
     },
-    data: function () {
+    data: function() {
         return {
             code15: "",
-            code16: "",
+            code16: ""
         };
     },
     updated() {
         this.init();
     },
     mounted() {
+        console.log(this.tovarName);
+        console.log(this.codeean);
         this.init();
     },
     methods: {
         ...mapActions(["getBarcode"]),
 
-        async init() {
+        init() {
             if (this.value == null || this.tovarName == null) return;
             this.generateBarcode(this.value);
             this.setCode31();
@@ -85,12 +87,12 @@ export default {
                 bwipjs.toCanvas(this.$refs.barcode, {
                     bcid: "datamatrix",
                     scale: 4,
-                    text: value,
+                    text: value
                 });
             } catch (e) {
                 console.log(e);
             }
-        },
-    },
+        }
+    }
 };
 </script>

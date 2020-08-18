@@ -80,14 +80,14 @@ class Codeean13 extends Model
         ];
     }
 
-    public static function getAllDMByStatus($status = null) {
+    public static function getAllDMByStatus($status = null,$cargo_id=null) {
 //        Log::debug(__CLASS__);
 //        Log::debug(__FUNCTION__);
         $eancodes = static::where('company_id', Auth::user()->company->id)->get()->all();
         $result = [];
         foreach ($eancodes as $eancode) {
 //            Log::debug(json_encode($eancode));
-            $codedms =  Codedm::getByStatus($eancode->id, $status);
+            $codedms =  Codedm::getByStatus($eancode->id, $status,$cargo_id);
             if(count($codedms))
                 array_push($result,['eancode'=>$eancode->code,'codes'=>$codedms, 'tovarName'=>$eancode->tovarname]);
         }

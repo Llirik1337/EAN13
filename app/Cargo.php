@@ -29,7 +29,8 @@ class Cargo extends Model
                 array_push($errors, [$datum]);
             } else {
                 $ean = $codedm->codeean13;
-                $cargo = static::firstOrCreate(['number' => $datum['number'], 'codeean13_id' => $ean->id], ['number' => $datum['number'], 'codeean13_id' => $ean->id]);
+                $cargo = static::firstOrCreate(['number' => $datum['number']], ['number' => $datum['number']]);
+                $cargo->codeean()->save($ean);
                 $codedm->cargo_id = $cargo->id;
                 $codedm->save();
             }
