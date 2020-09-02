@@ -19,7 +19,7 @@ class CodedmSeeder extends Seeder
             $company = factory(Company::class)->create();
             Log::debug(__CLASS__);
             Log::debug(__FUNCTION__);
-            for ($i = 0; $i < 20; $i++) {
+            for ($i = 0; $i < 1; $i++) {
                 factory(Codedm::class, 50)->create([
                     'codeean13_id' => factory(Codeean13::class)->create([
                         'company_id' => $company->id
@@ -27,8 +27,10 @@ class CodedmSeeder extends Seeder
                 ]);
 
             }
+
             $company = factory(Company::class)->create(['external'=>false]);
-            for ($i = 0; $i < 20; $i++) {
+            // $company = factory(Company::class)->create(['external'=>false]);
+            for ($i = 0; $i < 1; $i++) {
 
                 $number = random_int(100, 1000);
 

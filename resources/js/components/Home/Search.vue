@@ -190,6 +190,8 @@ export default {
           }
           }`,
             });
+            this.selectInput();
+
         },
         getEAN13Help() {
             return this.States.EAN13.help;
@@ -315,6 +317,7 @@ export default {
                 if (this.checkDM(this.getCode()))
                     this.findCodeDm(this.getCode()).then((res) => {
                         this.setNextStep();
+                        this.hideBarcode();
                     });
                 else {
                     this.setResultMsg(
