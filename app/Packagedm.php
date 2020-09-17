@@ -35,13 +35,14 @@ class Packagedm extends Model
 //                \Log::debug($codedm);
                 if ($codedm === null) {
                     array_push($errors_codedms, ['msg' => 'Can\'t not find DM', 'DM' => $codedm_item['codedm']]);
-                } else if ($codedm->status === null) {
-                    array_push($errors_codedms, ['msg' => 'This DM not use', 'DM' => $codedm]);
-                } else if ($codedm->status['name'] !== 'Inflicted') {
-                    array_push($errors_codedms, ['msg' => 'This status DM not "Inflicted"', 'DM' => $codedm]);
                 } else {
                     array_push($result_codedms, $codedm);
                 }
+                //  else if ($codedm->status === null) {
+                //     array_push($errors_codedms, ['msg' => 'This DM not use', 'DM' => $codedm]);
+                // } else if ($codedm->status['name'] !== 'Inflicted') {
+                //     array_push($errors_codedms, ['msg' => 'This status DM not "Inflicted"', 'DM' => $codedm]);
+                // }
             }
             return ['errors' => $errors_codedms, 'codedms' => $result_codedms, 'result' => count($errors_codedms) > 0 ? false : true];
         } else {
@@ -58,8 +59,15 @@ class Packagedm extends Model
 
         $result = ['result'=> true, 'packagedms' => []];
         foreach ($codedms as $codedm_item) {
-            $codedm_item->status['name'] = 'Package';
-            $codedm_item->status->save();
+            if($codedm_item->status===null){
+                $status = $codedm_item->Status()->create(['name' => 'Package']);
+                $codedm_item->status_id = $status->id;
+                $codedm_item->save();
+            }
+            else {
+                $codedm_item->status['name'] = 'Package';
+                $codedm_item->status->save();
+            }
             $packagedms = new Packagedm;
             $packagedms->package_id = $package_id;
             $packagedms->codedm_id = $codedm_item->id;
