@@ -39,7 +39,7 @@ class Codeean13 extends Model
         Log::debug(__CLASS__);
         Log::debug(__FUNCTION__);
         Log::debug($cargo_id);
-        $ean = static::where('code', $code)->where('company_id', Auth::user()->company->id)->get()->first();
+        $ean = static::where('code','like', $code.'%')->where('company_id', Auth::user()->company->id)->get()->first();
 
         if($ean && $cargo_id) {
             $codes = $ean->codedm()->where('cargo_id', $cargo_id)->get();

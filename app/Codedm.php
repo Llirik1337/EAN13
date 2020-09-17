@@ -54,7 +54,7 @@ class Codedm extends Model
         Log::debug(__FUNCTION__);
         Log::debug($codeDm);
         Log::debug($codeeanId);
-        return static::where('code', $codeDm)->where('codeean13_id',$codeeanId)->get()->first();
+        return static::where('code','like', $codeDm.'%')->where('codeean13_id','like',$codeeanId.'%')->get()->first();
     }
 
 
