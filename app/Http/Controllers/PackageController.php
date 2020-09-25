@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Package;
+use App\Packagedm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PackageController extends Controller
 {
@@ -34,18 +36,82 @@ class PackageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function add(Request $request)
     {
         $codedms = $request->codedms;
         $msg = 'error missing codems array';
         if($codedms !== null) {
             $result = Package::add($codedms);
-            // if($result !== false) {
-            //     $msg = 'successful add new package';
-            // } else {
-            //     $msg = 'error can\'t add package';
-            // }
             return response()->json(['result' => $result]);
+        } else {
+            return response()->json(['msg'=> $msg]);
+        }
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $codedms = $request->codedms;
+        $ean13 = $request->ean13;
+        $msg = 'error missing codems array';
+        if($codedms !== null) {
+            $result = Packagedm::checkDM($codedms);
+            if ($result['result']) {
+                Log::debug(json_encode($ean13));
+                $package = Package::findByEan($ean13);
+                if($package) {
+                    $package->codedms;
+                    $package->status;
+                }
+                Log::debug(json_encode($package));
+                $package->store = false;
+                $package->save();
+                return response()->json(['result' => $package]);
+            } else {
+                return response()->json(['result' => $result]);
+            }
+        } else {
+            return response()->json(['msg'=> $msg]);
+        }
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $codedms = $request->codedms;
+        $msg = 'error missing codems array';
+        if($codedms !== null) {
+            $result = Package::store($codedms);
+            return response()->json(['result' => $result]);
+        } else {
+            return response()->json(['msg'=> $msg]);
+        }
+    }
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function find(Request $request)
+    {
+        $ean13 = $request->ean13;
+        $msg = 'error missing code ean';
+        if($ean13 !== null) {
+            $package = Package::findByEan($ean13);
+            if($package) {
+                $package->codedms;
+                $package->status;
+            }
+            return response()->json(['result' => $package]);
         } else {
             return response()->json(['msg'=> $msg]);
         }
@@ -73,17 +139,6 @@ class PackageController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Package  $package
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Package $package)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.

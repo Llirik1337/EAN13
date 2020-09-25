@@ -4,7 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Codedm;
-use App\Statuscodedm;
+use Illuminate\Support\Facades\Log;
+
 // use Illuminate\Support\Facades\DB;
 
 class Packagedm extends Model
@@ -35,9 +36,21 @@ class Packagedm extends Model
 //                \Log::debug($codedm);
                 if ($codedm === null) {
                     array_push($errors_codedms, ['msg' => 'Can\'t not find DM', 'DM' => $codedm_item['codedm']]);
-                } else {
+                }  else if ($codedm->status !== null) {
+			$status = $codedm->status['name'];
+			switch ($status) {
+			case 'Inflicted':
+				break;
+			case 'Print':
+				break;
+			default:
+				array_push($errors_codedms, ['msg'=> 'DM early use', 'DM'=> $codedm]);
+			}
+			Log::debug(json_encode('!!!!!!!!!!!!!!!!!!!!!!1'));
+			Log::debug($status);
+		} else {
                     array_push($result_codedms, $codedm);
-                }
+		}
                 //  else if ($codedm->status === null) {
                 //     array_push($errors_codedms, ['msg' => 'This DM not use', 'DM' => $codedm]);
                 // } else if ($codedm->status['name'] !== 'Inflicted') {
@@ -49,6 +62,8 @@ class Packagedm extends Model
             return ['msg' => "none codedms", 'result' => false];
         }
     }
+
+
 
     public static function add($package_id,$codedms)
     {
@@ -71,6 +86,28 @@ class Packagedm extends Model
             $packagedms = new Packagedm;
             $packagedms->package_id = $package_id;
             $packagedms->codedm_id = $codedm_item->id;
+            $packagedms->save();
+            array_push($result['packagedms'], $packagedms);
+
+        }
+
+//        \Log::debug('result');
+//        \Log::debug(json_encode($result));
+        return $result;
+    }
+
+
+
+    public static function storeAdd($package_id,$codedms)
+    {
+
+        $result = ['result'=> true, 'packagedms' => []];
+        foreach ($codedms as $codedm_item) {
+            Log::debug($codedm_item['codedm']);
+            $dm = Codedm::getByCode($codedm_item['codedm']);
+            $packagedms = new Packagedm;
+            $packagedms->package_id = $package_id;
+            $packagedms->codedm_id = $dm->id;
             $packagedms->save();
             array_push($result['packagedms'], $packagedms);
 

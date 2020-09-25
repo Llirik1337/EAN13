@@ -56,7 +56,10 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::prefix('package')->group(function () {
-    Route::post('add', 'PackageController@store');
+    Route::post('add', 'PackageController@add');
+    Route::post('store', 'PackageController@store');
+    Route::post('find', 'PackageController@find');
+    Route::post('update', 'PackageController@update');
 });
 
 Route::prefix('box')->group(function () {

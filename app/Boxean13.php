@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Package;
+use Illuminate\Foundation\Bootstrap\LoadConfiguration;
+use Illuminate\Support\Facades\Log;
+
 class Boxean13 extends Model
 {
     protected $fillable = [
@@ -24,13 +27,11 @@ class Boxean13 extends Model
         if (count($code) > 0) {
             foreach ($code as $codedm_item) {
                 $package = Package::getByEAN($codedm_item['codeean13']);
-                \Log::debug('pakage');
-                \Log::debug($package);
+                Log::debug("!!!!!!!!!@@@@@");
+		        Log::debug(json_encode($package->codedms));
                 $isExist = false;
                 if($package !== null) {
                     $isExist = static::where('packages_id', $package->id)->get()->first() !== null;
-                    \Log::debug('isExist');
-                    \Log::debug($isExist);
                 } else if ($package === null) {
                     array_push($errors, ['msg' => 'Can\'t not find EAN code', 'Package' => $codedm_item['codeean13']]);
                 }
@@ -38,6 +39,14 @@ class Boxean13 extends Model
                     array_push($errors, ['msg' => 'EAN code was previously added', 'Package' => $package]);
                 }
                 else {
+                    foreach ($package->codedms as $code) {
+                        Log::debug(json_encode($code));
+                        $status = $code->status;
+                        $status->name = 'Boxed';
+                        $status->save();
+                        Log::debug(json_encode($status));
+                        Log::debug(json_encode($code));
+                    }
                     array_push($result, $package);
                 }
             }

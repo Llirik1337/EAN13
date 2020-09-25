@@ -17,7 +17,15 @@ class Package extends Model
         return $this->belongsTo(Statuscodedm::class, 'status_id');
     }
 
-    public static function createPackage()
+    public function codedms() {
+	    return $this->belongsToMany(Codedm::class, 'packagedms');
+    }
+
+    public static function findByEan($ean13) {
+        return static::where('EAN13', $ean13)->get()->first();
+    }
+
+    public static function createPackage($store = false)
     {
         $package = new Package;
 
@@ -30,7 +38,7 @@ class Package extends Model
 
 
         $package->EAN13 = 241000000000 + $package->id;
-
+        $package->store = $store;
         $package->save();
         return $package;
     }
@@ -58,6 +66,18 @@ class Package extends Model
             // } else {
             //     return ['EAN13' => $package->EAN13, 'result' => true];
             // }
+        } else {
+            return false;
+        }
+    }
+    public static function store($codedms)
+    {
+        if (count($codedms) > 0) {
+
+            $package = static::createPackage(true);
+            $package_result = ['EAN13' => $package->EAN13];
+            array_push($package_result, Packagedm::storeAdd($package->id, $codedms));
+            return $package_result;
         } else {
             return false;
         }

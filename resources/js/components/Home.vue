@@ -3,7 +3,8 @@
     <a-menu theme="light" v-model="current" mode="horizontal">
       <a-menu-item key="search">Marking</a-menu-item>
       <a-menu-item key="statistics">Statistics</a-menu-item>
-        <a-menu-item key="checking">Checking</a-menu-item>
+      <a-menu-item key="checking">Checking</a-menu-item>
+      <a-menu-item key="showStorePackage">Store package</a-menu-item>
       <a-menu-item key="createPackage">Create Package</a-menu-item>
       <a-menu-item key="createBox">Create Box</a-menu-item>
       <a-menu-item key="createShip">Create Shipment</a-menu-item>
@@ -27,6 +28,7 @@ import CreateBox from "./Home/Boxes";
 import CreateShipment from "./Home/CreateShipment";
 import Shipment from "./Home/Shipment";
 import Checking from "./Home/Checking";
+import ShowStorePackage from "./Home/ShowStorePackage";
 
 
 import { mapActions, mapGetters } from "vuex";
@@ -46,7 +48,8 @@ export default {
     CreatePackage,
     CreateBox,
     CreateShipment,
-      Checking
+      Checking,
+      ShowStorePackage
   },
   computed: {
     ...mapGetters(["getUser"])
@@ -67,6 +70,9 @@ export default {
           break;
         case "adminPanel":
           this.currentComponent = AdminPanel;
+          break;
+        case "showStorePackage":
+          this.currentComponent = ShowStorePackage;
           break;
         case "createPackage":
           this.currentComponent = CreatePackage;

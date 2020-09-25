@@ -8,25 +8,22 @@
           v-model="code"
           @pressEnter="endInputCode"
         ></a-input>
-        <div class="demo-infinite-container" :infinite-scroll-distance="10">
-          <a-list itemLayout="horizontal" :dataSource="data">
-            <a-list-item slot="renderItem" slot-scope="item, index">
-              <!-- <a href="#" slot="actions" @click="deleteItem(index)">Delete</a> -->
-              <a-popconfirm
-                title="Delete?"
-                @confirm="deleteItem(index)"
-                okText="Yes"
-                cancelText="No"
-              >
-                <a href="#">Delete</a>
-              </a-popconfirm>
-              <a-list-item-meta>
-                <a slot="title">{{item.codedm.slice(0,30)}}</a>
-              </a-list-item-meta>
-            </a-list-item>
-          </a-list>
-        </div>
+            <a-table :columns="columns" :data-source="data">
+                <a slot="name" slot-scope="text">{{ text }}</a>
+                <a slot="codedm" slot-scope="text">{{ text }}</a>
+                <a slot="actions" slot-scope="text, record, index">
+                <a-popconfirm
+                    title="Delete?"
+                    @confirm="deleteItem(index)"
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <a href="#">Delete</a>
+                </a-popconfirm>
+                </a>
+            </a-table>
         <a-button type="primary" @click="createPackage" block>Create package</a-button>
+        <a-button type="primary" style="margin-top: 1px;" @click="store" block>Store package</a-button>
       </a-col>
     </a-row>
     <a-row type="flex" justify="center" class="barcode">
@@ -49,7 +46,36 @@ export default {
       data: [],
       code: "",
       barcode: null,
-      viewBarcode: false
+      viewBarcode: false,
+        columns: [
+            {
+                title: 'DM code',
+                dataIndex: 'codedm',
+                key: 'codedm',
+                scopedSlots: { customRender: 'codedm' },
+            },
+            {
+                title: 'Info',
+                dataIndex: 'info',
+                key: 'info',
+                scopedSlots: { customRender: 'info' },
+                width: 300,
+            },
+            {
+                title: 'Status',
+                dataIndex: 'status',
+                key: 'status',
+                scopedSlots: { customRender: 'status' },
+                width: 150,
+            },
+            {
+                title: 'Actions',
+                dataIndex: 'actions',
+                key: 'actions',
+                scopedSlots: { customRender: 'actions' },
+                width: 150,
+            },
+        ]
     };
   },
   components: {
@@ -59,7 +85,7 @@ export default {
     this.selectInput();
   },
   methods: {
-    ...mapActions(["addPackage"]),
+    ...mapActions(["addPackage", "storePackage"]),
     getViewBarcode() {
       return this.viewBarcode;
     },
@@ -93,7 +119,20 @@ export default {
     setBarcode(val) {
       this.barcode = val;
     },
-
+    async store() {
+        try {
+            if (this.getData().length > 0) {
+                const res = await this.storePackage(this.getData());
+                this.hideBarcode();
+                this.setBarcode(res.toString());
+                this.showBarcode();
+                this.$message.success("Package successfully stored");
+                this.data = []
+            } else this.$message.warning("Input DM code");
+        } catch (e) {
+            console.log(e)
+        }
+    },
     createPackage() {
       if (this.getData().length > 0)
         this.addPackage(this.getData()).then(
@@ -103,8 +142,26 @@ export default {
             this.setBarcode(res.toString());
             this.showBarcode();
             this.$message.success("Package successfully created");
+            this.data = []
           },
-          res => {
+            ({errors, codedms}) => {
+              errors.map(item=> {
+                  let code;
+                  if(typeof item === 'object') {
+                      code = item.DM.code.slice(0, 31)
+                  }
+                  else {
+                      code = item.DM;
+                  }
+                  this.getCodedm(code).status = 'Error';
+                  this.getCodedm(code).info = item.msg;
+              })
+                codedms.map(item=> {
+                    const code = item.code.slice(0,31)
+                  this.getCodedm(code).status = 'Success';
+                    this.getCodedm(code).info = 'Ready';
+              })
+
             this.$message.error(
               "Failed to create package. Check datamatrix codes"
             );
@@ -120,14 +177,22 @@ export default {
     },
     addData(code) {
       this.getData().push({
-        codedm: code
+        codedm: code,
+          status: '-',
+          info: ''
       });
     },
+      getCodedm(codedm) {
+        return  this.data.find(item=> {
+            if(item.codedm === codedm)
+                return item;
+        })
+      },
     endInputCode() {
-      if (this.findDuplicate(this.getCode())) {
+      if (this.getCodedm(this.getCode())) {
         this.$message.warning("Is datamatrix code exist in this package");
       } else {
-        this.addData(this.getCode());
+        this.addData(this.getCode().slice(0,31));
         this.selectInput();
       }
     },
