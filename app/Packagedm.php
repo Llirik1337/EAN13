@@ -46,8 +46,6 @@ class Packagedm extends Model
 			default:
 				array_push($errors_codedms, ['msg'=> 'DM early use', 'DM'=> $codedm]);
 			}
-			Log::debug(json_encode('!!!!!!!!!!!!!!!!!!!!!!1'));
-			Log::debug($status);
 		} else {
                     array_push($result_codedms, $codedm);
 		}
@@ -105,12 +103,13 @@ class Packagedm extends Model
         foreach ($codedms as $codedm_item) {
             Log::debug($codedm_item['codedm']);
             $dm = Codedm::getByCode($codedm_item['codedm']);
-            $packagedms = new Packagedm;
-            $packagedms->package_id = $package_id;
-            $packagedms->codedm_id = $dm->id;
-            $packagedms->save();
-            array_push($result['packagedms'], $packagedms);
-
+            if($dm) {
+                $packagedms = new Packagedm;
+                $packagedms->package_id = $package_id;
+                $packagedms->codedm_id = $dm->id;
+                $packagedms->save();
+                array_push($result['packagedms'], $packagedms);
+            }
         }
 
 //        \Log::debug('result');

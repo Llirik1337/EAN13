@@ -73,7 +73,6 @@ class Package extends Model
     public static function store($codedms)
     {
         if (count($codedms) > 0) {
-
             $package = static::createPackage(true);
             $package_result = ['EAN13' => $package->EAN13];
             array_push($package_result, Packagedm::storeAdd($package->id, $codedms));

@@ -158,7 +158,7 @@ export default {
       return this.data;
     },
     getCode() {
-      return this.code;
+      return this.code.slice(0,12);
     },
     addData(code) {
       this.getData().push({

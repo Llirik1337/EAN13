@@ -146,13 +146,8 @@ export default {
           },
             ({errors, codedms}) => {
               errors.map(item=> {
-                  let code;
-                  if(typeof item === 'object') {
-                      code = item.DM.code.slice(0, 31)
-                  }
-                  else {
-                      code = item.DM;
-                  }
+                  let code = item.DM.code.slice(0,31);
+                  console.log(code)
                   this.getCodedm(code).status = 'Error';
                   this.getCodedm(code).info = item.msg;
               })
@@ -173,7 +168,7 @@ export default {
       return this.data;
     },
     getCode() {
-      return this.code;
+      return this.code.slice(0,31);
     },
     addData(code) {
       this.getData().push({
@@ -203,7 +198,8 @@ export default {
     findDuplicate(code) {
       let duplicate = false;
       this.getData().forEach(item => {
-        if (item.codeean13 === code) {
+        console.log(item)
+        if (item.codedms === code) {
           duplicate = true;
         }
       });
