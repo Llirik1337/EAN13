@@ -1,16 +1,23 @@
 <template>
     <div>
-        <a-button @click="printAll()">Print all free DM Codes</a-button>
+        <div style="margin: 5px">
+            <a-button @click="printAll()">Print all free DM Codes</a-button>
+            <select-barcode-template :templates-list-title="barcodeTemplateNameList"
+                                     @change="globalChangeBarcodeTemplate"></select-barcode-template>
+        </div>
         <a-table
             :dataSource="tableData"
             :rowKey="record => record.code"
             :columns="columns"
             :loading="loadingData"
+            size="large"
         >
             <template slot="action" slot-scope="text, record">
+                <select-barcode-template :templates-list-title="barcodeTemplateNameList"
+                                         @change="changeBarcodeTemplate"></select-barcode-template>
                 <print-action
                     @print="
-                        count => getAll(record.code, record.tovarname, count)
+                        count => getAll(record, count)
                     "
                 />
             </template>
@@ -20,7 +27,6 @@
                 <a-button key="back" @click="print = false">
                     Cancel
                 </a-button>
-
                 <a-button @click.stop="printBarcode()">Print</a-button>
             </template>
             <div id="print">
@@ -30,6 +36,10 @@
                     v-for="item in toPrint"
                     :key="Math.random()"
                     :codes="item.codes"
+                    :has-e-a-c="item.Certification ? true : false"
+                    :description="item.description"
+                    :barcode-template="currentBarcodeTemplate"
+                    :inner-code="item.innerCode"
                     :tovar-name="item.tovarName"
                     @render="printBarcode"
                     :codeean="item.codeean"
@@ -40,11 +50,49 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import printJS from "print-js";
 import ModalBarcodes from "./Statistics/modalBarcodes";
 import Barcodes from "./Statistics/Barcodes";
 import PrintAction from "./Statistics/PrintAction";
+import defaultTemplate from "./BarcodesTemplate/default";
+import newTemplate from "./BarcodesTemplate/new";
+import SelectBarcodeTemplate from "./SelectBarcodeTemplate";
+
+const defaultTemplatePrintConfig = {
+    printable: "print",
+    type: "html",
+    style: `
+        @page {
+           size: Letter landscape;
+           size: 58mm 40mm;
+           margin: 0px;
+          }
+          @media print {
+          *{
+          font-size: 11pt;
+          }
+          }`,
+};
+
+const newTemplatePrintConfig = {
+    printable: "print",
+    type: "html",
+    style: `
+        @page {
+           size: Letter landscape;
+           size: 58mm 80mm;
+           margin: 0px;
+          }
+          @media print {
+          *{
+          font-size: 7pt;
+          }
+          img {
+            float: right;
+          }
+          }`,
+};
 
 const columns = [
     {
@@ -57,7 +105,8 @@ const columns = [
     },
     {
         title: "Functions",
-        scopedSlots: { customRender: "action" }
+        scopedSlots: {customRender: "action"},
+        width: "400px"
     },
     {
         title: "DM free",
@@ -83,9 +132,16 @@ const columns = [
 
 export default {
     name: "Statistics",
-    components: { PrintAction, Barcodes, ModalBarcodes },
-    data: function() {
+    components: {SelectBarcodeTemplate, PrintAction, Barcodes, ModalBarcodes},
+    data: function () {
         return {
+            barcodeTemplateNameList: ['old(58*40)', 'new(58*80)'],
+            barcodeTemplateList: [defaultTemplate, newTemplate],
+            barcodeTemplatePrintConfigList: [defaultTemplatePrintConfig, newTemplatePrintConfig],
+            currentBarcodeTemplate: defaultTemplate,
+            currentPrintConfig: defaultTemplatePrintConfig,
+            globalCurrentBarcodeTemplate: defaultTemplate,
+            globalCurrentPrintConfig: defaultTemplatePrintConfig,
             tableData: [],
             columns,
             loadingData: true,
@@ -95,7 +151,11 @@ export default {
             print: false
         };
     },
-
+    watch: {
+        toPrint() {
+            console.log('this.toPrint -> ', this.toPrint);
+        }
+    },
     async mounted() {
         await this.updateData();
     },
@@ -109,6 +169,14 @@ export default {
             "setStatus",
             "getAllFreeDMCode"
         ]),
+        changeBarcodeTemplate(templateIndex) {
+            this.currentBarcodeTemplate = this.barcodeTemplateList[templateIndex];
+            this.currentPrintConfig = this.barcodeTemplatePrintConfigList[templateIndex];
+        },
+        globalChangeBarcodeTemplate(templateIndex) {
+            this.globalCurrentBarcodeTemplate = this.barcodeTemplateList[templateIndex];
+            this.globalCurrentPrintConfig = this.barcodeTemplatePrintConfigList[templateIndex];
+        },
         async updateData() {
             this.loadingData = true;
             await this.updateStatistics();
@@ -121,34 +189,15 @@ export default {
                 console.log(res);
                 this.toPrint = [];
                 this.toPrint = res;
-                // for (const [ean, data] of Object.entries(res)) {
-                //     console.log(ean, data)
-                //     this.toPrint[ean] = data
-                // }
                 this.print = true;
-                console.log(this.toPrint);
+                console.log('this.toPrint -> ', this.toPrint);
             } catch (e) {
                 console.log(e.massage);
             }
         },
         async printBarcode() {
             try {
-                printJS({
-                    printable: "print",
-                    type: "html",
-                    style: `
-              @page {
-                    size: Letter landscape;
-                    size: 57mm 40mm;
-                    margin: 0px;
-              }
-              @media print {*{
-                        page-break-after: always;
-                        font-size: 8pt;
-                        }
-                    }
-                `
-                });
+                printJS(this.currentPrintConfig);
                 for (const toPrintElement of this.toPrint) {
                     for (const code of toPrintElement.codes) {
                         // console.log(code);
@@ -162,18 +211,26 @@ export default {
                 console.log(e.massage);
             }
         },
-        async getAll(codeean, tovarName, count) {
+        async getAll(record, count) {
             try {
                 this.toPrint = [];
                 let res;
+                console.log('record -> ', record);
                 if (!count) {
-                    res = await this.getAllDMCodes({ codeean });
+                    res = await this.getAllDMCodes({codeean: record.code});
                 } else {
-                    res = await this.getAllDMCodes({ codeean, count });
+                    res = await this.getAllDMCodes({codeean: record.code, count});
                 }
-
+                console.log('res -> ', res);
                 if (!res.length) return;
-                this.toPrint = [{ codeean, codes: res, tovarName }];
+                this.toPrint = [{
+                    codeean: record.code,
+                    codes: res,
+                    tovarName: record.tovarname,
+                    description: record.description,
+                    innerCode: record.innerCode,
+                    Certification: record.Certification
+                }];
                 this.print = true;
             } catch (e) {
                 console.log(e);

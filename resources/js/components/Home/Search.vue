@@ -9,8 +9,9 @@
                 layout="vertical"
             >
                 <a-form-item label="Company">{{
-                    user.company.name
-                }}</a-form-item>
+                        user.company.name
+                    }}
+                </a-form-item>
                 <a-form-item label="Cargo number" v-if="!user.company.external">
                     <a-auto-complete
                         :data-source="getExternalsNumbers"
@@ -18,22 +19,11 @@
                     ></a-auto-complete>
                 </a-form-item>
                 <a-form-item label="Printing directly to the printer">
-                    <a-checkbox :disabled="!getEnabled" v-model="toPrint" />
+                    <a-checkbox :disabled="!getEnabled" v-model="toPrint"/>
                 </a-form-item>
                 <a-form-item label="Print settings">
-                    <!--                    <a-select-->
-                    <!--                        v-model="fontWeight"-->
-                    <!--                        default-value="normal"-->
-                    <!--                        style="width: 120px;"-->
-                    <!--                    >-->
-                    <!--                        <a-select-option value="bold">-->
-                    <!--                            Bold-->
-                    <!--                        </a-select-option>-->
-                    <!--                        <a-select-option value="normal">-->
-                    <!--                            Normal-->
-                    <!--                        </a-select-option>-->
-                    <!--                    </a-select>-->
-                    <!--                    <a-input-number v-model="fontSize" :min="8" :max="18" />-->
+                    <select-barcode-template :templates-list-title="barcodeTemplateNameList"
+                                             @change="changeBarcodeTemplate"></select-barcode-template>
                 </a-form-item>
                 <a-form-item label="EAN13">{{ getCodeEAN13Msg() }}</a-form-item>
                 <a-form-item label="Code">
@@ -47,44 +37,89 @@
                         :allowClear="true"
                         :help="getHelpInputCode"
                     >
-                        <!-- <span slot="addonBefore" class="input-prefix">{{state}}</span> -->
                     </a-input>
                 </a-form-item>
                 <a-form-item label="Result">
                     <p>{{ resultMsg }}</p>
                     <div v-if="viewBarcode">
-                        <barcode
+                        <barcode-print-field
                             id="print"
-                            :tovarName="getCodeEAN13().tovarname"
-                            :codeean="code"
-                            :value="getCodeDM().code"
-                            :font-size="fontSize"
-                            :font-width="fontWeight"
-                        ></barcode>
+                            :template="currentBarcodeTemplate"
+                            :data="getBarcodeData"
+                        ></barcode-print-field>
+                        <!--                        <barcode-->
+                        <!--                            id="print"-->
+                        <!--                            :tovarName="getCodeEAN13().tovarname"-->
+                        <!--                            :codeean="code"-->
+                        <!--                            :value="getCodeDM().code"-->
+                        <!--                            :font-size="fontSize"-->
+                        <!--                            :font-width="fontWeight"-->
+                        <!--                        ></barcode>-->
                         <a-button type="primary" @click="printBarcode"
-                            >Print</a-button
+                        >Print
+                        </a-button
                         >
                     </div>
                 </a-form-item>
             </a-form>
         </a-col>
-        <!-- <preview-barcode
-      v-if="previewBarcodeVisible"
-      :tovarName="getCodeEAN13().tovarname"
-      :value="getCodeDM().code"
-      :visible="previewBarcodeVisible"
-    ></preview-barcode>-->
     </a-row>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import printJS from "print-js";
 import Barcode from "./Search/Barcode";
 import PreviewBarcode from "./Search/PreviewBarcode";
+import SelectBarcodeTemplate from "./SelectBarcodeTemplate";
+import defaultTemplate from "./BarcodesTemplate/default";
+import newTemplate from "./BarcodesTemplate/new";
+import BarcodePrintField from "./BarcodePrintField";
+
+
+const defaultTemplatePrintConfig = {
+    printable: "print",
+    type: "html",
+    style: `
+        @page {
+           size: Letter landscape;
+           size: 58mm 40mm;
+           margin: 0px;
+          }
+          @media print {
+          *{
+          font-size: 11pt;
+          }
+          }`,
+};
+
+const newTemplatePrintConfig = {
+    printable: "print",
+    type: "html",
+    style: `
+        @page {
+           size: Letter landscape;
+           size: 58mm 80mm;
+           margin: 0px;
+          }
+          @media print {
+          *{
+          font-size: 7pt;
+          }
+          img {
+            float: right;
+          }
+          }`,
+};
+
 export default {
     name: "Search",
     data() {
         return {
+            barcodeTemplateNameList: ['old(58*40)', 'new(58*80)'],
+            barcodeTemplateList: [defaultTemplate, newTemplate],
+            barcodeTemplatePrintConfigList: [defaultTemplatePrintConfig, newTemplatePrintConfig],
+            currentBarcodeTemplate: defaultTemplate,
+            currentPrintConfig: defaultTemplatePrintConfig,
             formCol: {
                 label: {
                     span: 3,
@@ -126,13 +161,15 @@ export default {
         };
     },
     components: {
+        BarcodePrintField,
         Barcode,
         PreviewBarcode,
+        SelectBarcodeTemplate
     },
     beforeMount() {
         this.user = this.getUser;
         this.selectCargo = this.getSelectedCargo;
-        this.form = this.$form.createForm(this, { name: "search" });
+        this.form = this.$form.createForm(this, {name: "search"});
     },
     mounted() {
         this.Init();
@@ -140,12 +177,24 @@ export default {
     },
     computed: {
         ...mapGetters(["getUser", "getSelectedCargo"]),
+        getBarcodeData() {
+            return {
+                tovarName: this.getCodeEAN13().tovarname,
+                description: this.getCodeEAN13().description,
+                hasEAC: this.getCodeEAN13().Certification ? true : false,
+                innerCode: this.getCodeEAN13().innerCode,
+                codeean: this.code,
+                value: this.getCodeDM().code,
+                "font-size": this.fontSize,
+                "font-width": this.fontWeight
+            }
+        },
         getExternalsNumbers() {
             if (this.user.company.codeean13) {
-                const defaultCargo = [{ text: "Нет", value: "-1" }];
+                const defaultCargo = [{text: "Нет", value: "-1"}];
                 for (const ean of this.user.company.codeean13) {
-                    for (const { number: text, id: value } of ean.cargo) {
-                        defaultCargo.push({ text, value: value.toString() });
+                    for (const {number: text, id: value} of ean.cargo) {
+                        defaultCargo.push({text, value: value.toString()});
                     }
                 }
                 const uniqueArray = (a) =>
@@ -174,24 +223,14 @@ export default {
             "searchCodeDM",
             "updateSelectedCargo",
         ]),
+        changeBarcodeTemplate(templateIndex) {
+            // console.log('templateName -> ', templateIndex);
+            this.currentBarcodeTemplate = this.barcodeTemplateList[templateIndex];
+            this.currentPrintConfig = this.barcodeTemplatePrintConfigList[templateIndex];
+        },
         printBarcode() {
-            printJS({
-                printable: "print",
-                type: "html",
-                style: `
-        @page {
-           size: Letter landscape;
-           size: 57mm 40mm;
-           margin: 0px;
-          }
-          @media print {
-          *{
-          font-size: 11pt;
-          }
-          }`,
-            });
+            printJS(this.currentPrintConfig);
             this.selectInput();
-
         },
         getEAN13Help() {
             return this.States.EAN13.help;
@@ -452,7 +491,7 @@ export default {
             this.toPrint = val;
         },
 
-        changePrint({ target }) {
+        changePrint({target}) {
             //   this.toPrint = target.checked;
             this.setToPrint(target.checked);
         },
@@ -468,10 +507,12 @@ export default {
     background-color: #fff;
     padding: 24px;
 }
+
 .input-state {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 10pt;
 }
+
 .ant-form-item {
     margin-bottom: 0px;
 }

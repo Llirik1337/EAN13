@@ -114,7 +114,6 @@ class Codeean13 extends Model
     {
         Log::debug(__CLASS__);
         Log::debug(__FUNCTION__);
-        Log::debug($cargo_id);
         $codeean13 = static::where('company_id', $company_id)->whereHas('codedm',function (Builder $query) use ($cargo_id) {
            return $query->where('cargo_id', $cargo_id);
         })->get();

@@ -1,5 +1,5 @@
 <template>
-    <div :key="Math.random()" :style="`font-size:8pt;`">
+    <div :key="Math.random()" style="font-size:8pt;  height: 57mm; padding-top: 5px">
         {{ this.codeean }}
         <table width="500">
             <tr>
@@ -28,60 +28,53 @@
 </template>
 
 <script>
-import bwipjs from "bwip-js";
 
 import { mapActions, mapGetters } from "vuex";
+import bwipjs from "bwip-js";
 export default {
     props: {
-        codeean: {
-            type: String,
-            required: true
+        data: {
+          type: Object,
+          requred: true,
         },
-        value: {
-            required: true,
-            type: String
-        },
-        tovarName: {
-            required: true,
-            type: String
-        },
-        fontWidth: {
-            type: String,
-            default: "normal"
-        },
-        fontSize: {
-            type: Number,
-            default: 8
-        }
+
     },
     data: function() {
         return {
             code15: "",
-            code16: ""
+            code16: "",
+            codeean: "",
+            value: "",
+            tovarName: "",
+            fontWidth: "",
+            fontSize: "",
         };
     },
     updated() {
         this.init();
     },
     mounted() {
-        // console.log(this.tovarName);
-        // console.log(this.codeean);
         this.init();
     },
     methods: {
         ...mapActions(["getBarcode"]),
-
         init() {
-            if (this.value == null || this.tovarName == null) return;
-            this.generateBarcode(this.value);
+            const {codeean, value, tovarName, fontWidth, fontSize} = this.data;
+            this.codeean = codeean;
+            this.value = value
+            this.tovarName = tovarName
+            this.fontWidth = fontWidth
+            this.fontSize = fontSize
+
+            if (this.value === null || this.tovarName === null) return;
             this.setCode31();
+            this.generateBarcode(this.value);
         },
         setCode31() {
             this.code15 =
                 "(" + this.value.slice(0, 2) + ")" + this.value.slice(2, 15);
             this.code16 = this.value.slice(15, 31);
         },
-
         generateBarcode(value) {
             try {
                 bwipjs.toCanvas(this.$refs.barcode, {

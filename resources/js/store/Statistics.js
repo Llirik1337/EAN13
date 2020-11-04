@@ -29,10 +29,14 @@ export default {
                     ({ data }) => {
                         // console.log(data);
                         const updateData = data.map(item => {
+                            console.log('item -> ',item);
                             return {
                                 code: item.code,
                                 tovarname: item.tovarname,
                                 free: item.statistics.free,
+                                description: item.description,
+                                innerCode: item.innerCode,
+                                Certification: item.Certification,
                                 printed: item.statistics.printed,
                                 inflicted: item.statistics.inflicted,
                                 package: item.statistics.package,

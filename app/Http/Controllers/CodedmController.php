@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Codedm;
+use App\Codeean13;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -46,10 +47,10 @@ class CodedmController extends Controller
             $codedm->status_id = $status->id;
             $codedm->save();
         }
-//        \Log::debug('store');
-//        \Log::debug(json_encode($codedm));
-
-        return response()->json(['codedm' => $codedm]);
+//        Log::debug($input['codeean13_id']);
+        $codeean13 = Codeean13::find($input['codeean13_id']);
+//        Log::debug(json_encode($codeean13));
+        return response()->json(['codedm' => $codedm, 'codeean13'=> $codeean13]);
     }
 
     public function add(Request $request)

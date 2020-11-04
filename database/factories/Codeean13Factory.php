@@ -12,6 +12,8 @@ $factory->define(Codeean13::class, function (Faker $faker) {
 //        'code' => Str::random(13),
         'code'=>$faker->ean13,
         'tovarname' => $faker->text(100),
+        'innerCode' => $faker->ean13,
+        'description' => $faker->text(1024)
         // 'company_id' => factory(Company::class),
     ];
 });

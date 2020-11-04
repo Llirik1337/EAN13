@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <span>
         <a-checkbox v-model="printAll">All</a-checkbox>
         <a-input-number :min="1" :disabled="printAll" v-model="count" />
         <a-button @click.stop="print()">
             Print
         </a-button>
-    </div>
+    </span>
 </template>
 
 <script>
