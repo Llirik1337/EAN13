@@ -30,7 +30,6 @@
                 <a-button @click.stop="printBarcode()">Print</a-button>
             </template>
             <div id="print">
-                <!--                <barcodes v-if="print" v-for="(item,key) in toPrint" :key="Math.random()" :codes="item.codes" :tovar-name="item.tovarName" :after-render="printBarcode" :codeean="key"></barcodes>-->
                 <barcodes
                     v-if="print"
                     v-for="item in toPrint"
@@ -43,6 +42,29 @@
                     :tovar-name="item.tovarName"
                     @render="printBarcode"
                     :codeean="item.codeean"
+                ></barcodes>
+            </div>
+        </a-modal>
+        <a-modal title="Printed" :visible="globalPrint" @cancel="globalPrint = false">
+            <template slot="footer">
+                <a-button key="back" @click="globalPrint = false">
+                    Cancel
+                </a-button>
+                <a-button @click.stop="printBarcode()">Print</a-button>
+            </template>
+            <div id="printAll">
+                <barcodes
+                    v-if="globalPrint"
+                    v-for="item in toPrint"
+                    :key="Math.random()"
+                    :codes="item.codes"
+                    :has-e-a-c="item.eancode.Certification ? true : false"
+                    :description="item.eancode.description"
+                    :barcode-template="globalCurrentBarcodeTemplate"
+                    :inner-code="item.eancode.innerCode"
+                    :tovar-name="item.eancode.tovarname"
+                    @render="globalPrintBarcode"
+                    :codeean="item.eancode.code"
                 ></barcodes>
             </div>
         </a-modal>
@@ -72,6 +94,9 @@ const defaultTemplatePrintConfig = {
           *{
           font-size: 11pt;
           }
+          .new-page {
+            page-break-before: always;
+          }
           }`,
 };
 
@@ -87,6 +112,49 @@ const newTemplatePrintConfig = {
           @media print {
           *{
           font-size: 7pt;
+          }
+          .new-page {
+            page-break-before: always;
+          }
+          img {
+            float: right;
+          }
+          }`,
+};
+const globalDefaultTemplatePrintConfig = {
+    printable: "printAll",
+    type: "html",
+    style: `
+        @page {
+           size: Letter landscape;
+           size: 58mm 40mm;
+           margin: 0px;
+          }
+          @media print {
+          *{
+          font-size: 11pt;
+          }
+          .new-page {
+            page-break-before: always;
+          }
+          }`,
+};
+
+const globalNewTemplatePrintConfig = {
+    printable: "printAll",
+    type: "html",
+    style: `
+        @page {
+           size: Letter landscape;
+           size: 58mm 80mm;
+           margin: 0px;
+          }
+          @media print {
+          *{
+          font-size: 7pt;
+          }
+          .new-page {
+            page-break-before: always;
           }
           img {
             float: right;
@@ -141,6 +209,7 @@ export default {
             currentBarcodeTemplate: defaultTemplate,
             currentPrintConfig: defaultTemplatePrintConfig,
             globalCurrentBarcodeTemplate: defaultTemplate,
+            globalBarcodeTemplatePrintConfigList: [globalDefaultTemplatePrintConfig, globalNewTemplatePrintConfig],
             globalCurrentPrintConfig: defaultTemplatePrintConfig,
             tableData: [],
             columns,
@@ -148,7 +217,8 @@ export default {
             toPrint: [],
             tovarName: null,
             codeean: "",
-            print: false
+            print: false,
+            globalPrint: false,
         };
     },
     watch: {
@@ -175,7 +245,7 @@ export default {
         },
         globalChangeBarcodeTemplate(templateIndex) {
             this.globalCurrentBarcodeTemplate = this.barcodeTemplateList[templateIndex];
-            this.globalCurrentPrintConfig = this.barcodeTemplatePrintConfigList[templateIndex];
+            this.globalCurrentPrintConfig = this.globalBarcodeTemplatePrintConfigList[templateIndex];
         },
         async updateData() {
             this.loadingData = true;
@@ -184,9 +254,10 @@ export default {
             this.loadingData = false;
         },
         async printAll() {
+
             try {
                 const res = await this.getAllFreeDMCode();
-                console.log(res);
+                console.log('printAll:res-> ',res);
                 this.toPrint = [];
                 this.toPrint = res;
                 this.print = true;
@@ -207,6 +278,23 @@ export default {
                         });
                     }
                 }
+            } catch (e) {
+                console.log(e.massage);
+            }
+        },
+        async globalPrintBarcode() {
+            console.log("!!!!!")
+            try {
+                printJS(this.globalCurrentPrintConfig);
+                for (const toPrintElement of this.toPrint) {
+                    for (const code of toPrintElement.codes) {
+                        const res = await this.setStatus({
+                            codedm_id: code.id,
+                            status: "Print"
+                        });
+                    }
+                }
+                this.globalPrint = true;
             } catch (e) {
                 console.log(e.massage);
             }

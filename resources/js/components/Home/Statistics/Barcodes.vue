@@ -1,13 +1,6 @@
 <template>
     <div>
-        <!--        <barcode-->
-        <!--            v-for="item in codes"-->
-        <!--            :key="Math.random()"-->
-        <!--            :value="item.code"-->
-        <!--            :tovar-name="tovarName"-->
-        <!--            :codeean="codeean"-->
-        <!--        />-->
-        <div v-for="item in codes" >
+        <div v-for="item in codes" class="new-page">
             <barcode-print-field
                 :key="Math.random()"
                 :template="barcodeTemplate"
@@ -80,9 +73,4 @@ export default {
 </script>
 
 <style scoped>
-@media print {
-    .new-page {
-        page-break-after: always;
-    }
-}
 </style>

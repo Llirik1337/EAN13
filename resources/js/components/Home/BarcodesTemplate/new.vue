@@ -1,5 +1,5 @@
 <template>
-    <div :key="Math.random()" style="font-size:6pt; height: 117mm;" class="more">
+    <div :key="Math.random()" style="font-size:6pt; height: 115mm;">
         <table width="280">
             <tr>
                 <td colspan="2">

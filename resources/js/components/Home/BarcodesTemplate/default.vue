@@ -1,5 +1,5 @@
 <template>
-    <div :key="Math.random()" style="font-size:8pt;  height: 57mm; padding-top: 5px">
+    <div :key="Math.random()" style="font-size:8pt;  height: 57mm; padding-top: 5px" class="new-page">
         {{ this.codeean }}
         <table width="500">
             <tr>

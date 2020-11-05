@@ -129,8 +129,6 @@ class Codeean13Controller extends Controller
     }
 
     public function getAllCodedm(Request $request) {
-//        Log::debug(__CLASS__);
-//        Log::debug(__FUNCTION__);
         $validateData = $request->validate(['codeean'=> 'required']);
         $input = $request->all();
         $codeean = $input['codeean'];
