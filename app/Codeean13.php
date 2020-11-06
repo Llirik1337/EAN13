@@ -53,7 +53,7 @@ class Codeean13 extends Model
         return static::where('code', $codeean)->where('company_id', Auth::user()->company->id)->get()->all();
     }
 
-    public static function add($code, $tovar = null, $company = null)
+    public static function add($code, $tovar = null, $company = null, $description = null, $innerCode = null, $Certification = null)
     {
 //        \Log::debug(__CLASS__ . "->" . __FUNCTION__);
         $codeean13 = static::firstOrCreate(['code' => $code]);
@@ -61,7 +61,12 @@ class Codeean13 extends Model
             $codeean13->tovarname = $tovar;
         if ($company !== null && $codeean13->company_id === null)
             $codeean13->company_id = Company::firstOrCreate(['name' => $company])->id;
-//        \Log::debug(json_encode($codeean13));
+        if($description)
+            $codeean13->description = $description;
+        if($innerCode)
+            $codeean13->innerCode = $innerCode;
+        if($Certification)
+            $codeean13->Certification = $Certification;
         $codeean13->save();
         return $codeean13;
     }

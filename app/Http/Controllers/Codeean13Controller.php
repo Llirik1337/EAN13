@@ -48,9 +48,6 @@ class Codeean13Controller extends Controller
         $codeean13 = [];
         foreach ($data as $key => $element) {
 //            \Log::debug($element);
-
-
-
             if (!isset($element['code'])) {
                 array_push($error_response, ['error' => ['msg' => 'missing argument', 'argument' => 'code'], 'element' => $element, 'index' => $key]);
             } else
@@ -63,11 +60,10 @@ class Codeean13Controller extends Controller
                 $code = $element['code'];
                 $tovar = $element['tovar'];
                 $company = $element['company'];
-
-//                \Log::debug($code);
-//                \Log::debug($tovar);
-//                \Log::debug($company);
-                array_push($codeean13, Codeean13::add($code, $tovar, $company));
+                $description = $element['description'];
+                $innerCode = $element['innerCode'];
+                $Certification = $element['Certification'];
+                array_push($codeean13, Codeean13::add($code, $tovar, $company, $description, $innerCode, $Certification));
             }
         }
         return response()->json(['codeean13' => $codeean13, 'error' => $error_response]);

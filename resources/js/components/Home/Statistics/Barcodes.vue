@@ -43,12 +43,10 @@ export default {
         },
         innerCode: {
             type: String
-        }
+        },
     },
     mounted() {
-        console.log(this.barcodeTemplate)
         this.$nextTick(function () {
-            // this.afterRender();
             setTimeout(() => this.$emit("render"), 1000);
         });
     },
@@ -62,10 +60,10 @@ export default {
                 hasEAC: this.hasEAC,
                 innerCode: this.innerCode
             }
-            console.log('this.description -> ', this.description)
-            console.log('this.innerCode -> ', this.innerCode)
-            console.log('this.hasEAC -> ', this.hasEAC)
-            console.log('convertedToData -> ', convertedToData);
+            // console.log('this.description -> ', this.description)
+            // console.log('this.innerCode -> ', this.innerCode)
+            // console.log('this.hasEAC -> ', this.hasEAC)
+            // console.log('convertedToData -> ', convertedToData);
             return convertedToData;
         }
     }

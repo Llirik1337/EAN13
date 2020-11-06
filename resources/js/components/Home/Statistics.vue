@@ -2,8 +2,7 @@
     <div>
         <div style="margin: 5px">
             <a-button @click="printAll()">Print all free DM Codes</a-button>
-            <select-barcode-template :templates-list-title="barcodeTemplateNameList"
-                                     @change="globalChangeBarcodeTemplate"></select-barcode-template>
+            <select-barcode-template :templates-list-title="barcodeTemplateNameList" @change="globalChangeBarcodeTemplate"></select-barcode-template>
         </div>
         <a-table
             :dataSource="tableData"
@@ -13,8 +12,7 @@
             size="large"
         >
             <template slot="action" slot-scope="text, record">
-                <select-barcode-template :templates-list-title="barcodeTemplateNameList"
-                                         @change="changeBarcodeTemplate"></select-barcode-template>
+                <select-barcode-template :templates-list-title="barcodeTemplateNameList"  @change="changeBarcodeTemplate"></select-barcode-template>
                 <print-action
                     @print="
                         count => getAll(record, count)
@@ -23,11 +21,12 @@
             </template>
         </a-table>
         <a-modal title="Printed" :visible="print" @cancel="print = false">
+            <select-barcode-template :templates-list-title="barcodeTemplateNameList"  @change="changeBarcodeTemplate"></select-barcode-template>
+            <a-button @click.stop="printBarcode()">Print</a-button>
             <template slot="footer">
                 <a-button key="back" @click="print = false">
                     Cancel
                 </a-button>
-                <a-button @click.stop="printBarcode()">Print</a-button>
             </template>
             <div id="print">
                 <barcodes
@@ -46,16 +45,19 @@
             </div>
         </a-modal>
         <a-modal title="Printed" :visible="globalPrint" @cancel="globalPrint = false">
+            <select-barcode-template :templates-list-title="barcodeTemplateNameList" @change="globalChangeBarcodeTemplate"></select-barcode-template>
+            <a-button @click.stop="printBarcode()">Print</a-button>
             <template slot="footer">
                 <a-button key="back" @click="globalPrint = false">
                     Cancel
                 </a-button>
-                <a-button @click.stop="printBarcode()">Print</a-button>
+
             </template>
             <div id="printAll">
                 <barcodes
                     v-if="globalPrint"
                     v-for="item in toPrint"
+                    :item="item"
                     :key="Math.random()"
                     :codes="item.codes"
                     :has-e-a-c="item.eancode.Certification ? true : false"
@@ -65,7 +67,8 @@
                     :tovar-name="item.eancode.tovarname"
                     @render="globalPrintBarcode"
                     :codeean="item.eancode.code"
-                ></barcodes>
+                >
+                </barcodes>
             </div>
         </a-modal>
     </div>
@@ -240,12 +243,23 @@ export default {
             "getAllFreeDMCode"
         ]),
         changeBarcodeTemplate(templateIndex) {
+            console.group("changeBarcodeTemplate")
+            console.log('templateIndex -> ', templateIndex)
             this.currentBarcodeTemplate = this.barcodeTemplateList[templateIndex];
             this.currentPrintConfig = this.barcodeTemplatePrintConfigList[templateIndex];
+            console.log('this.currentBarcodeTemplate -> ', this.currentBarcodeTemplate)
+            console.log('this.currentPrintConfig -> ', this.currentPrintConfig)
+            console.groupEnd();
         },
         globalChangeBarcodeTemplate(templateIndex) {
+            console.group("globalChangeBarcodeTemplate")
+            console.log('templateIndex -> ', templateIndex)
             this.globalCurrentBarcodeTemplate = this.barcodeTemplateList[templateIndex];
             this.globalCurrentPrintConfig = this.globalBarcodeTemplatePrintConfigList[templateIndex];
+
+            console.log('this.globalCurrentBarcodeTemplate -> ', this.globalCurrentBarcodeTemplate)
+            console.log('this.globalCurrentPrintConfig -> ', this.globalCurrentPrintConfig)
+            console.groupEnd();
         },
         async updateData() {
             this.loadingData = true;
@@ -260,7 +274,7 @@ export default {
                 console.log('printAll:res-> ',res);
                 this.toPrint = [];
                 this.toPrint = res;
-                this.print = true;
+                this.globalPrint = true;
                 console.log('this.toPrint -> ', this.toPrint);
             } catch (e) {
                 console.log(e.massage);
