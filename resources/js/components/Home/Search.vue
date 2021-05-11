@@ -8,9 +8,8 @@
                 @submit="submit"
                 layout="vertical"
             >
-                <a-form-item label="Company">{{
-                        user.company.name
-                    }}
+                <a-form-item label="Company"
+                    >{{ user.company.name }}
                 </a-form-item>
                 <a-form-item label="Cargo number" v-if="!user.company.external">
                     <a-auto-complete
@@ -19,11 +18,13 @@
                     ></a-auto-complete>
                 </a-form-item>
                 <a-form-item label="Printing directly to the printer">
-                    <a-checkbox :disabled="!getEnabled" v-model="toPrint"/>
+                    <a-checkbox :disabled="!getEnabled" v-model="toPrint" />
                 </a-form-item>
                 <a-form-item label="Print settings">
-                    <select-barcode-template :templates-list-title="barcodeTemplateNameList"
-                                             @change="changeBarcodeTemplate"></select-barcode-template>
+                    <select-barcode-template
+                        :templates-list-title="barcodeTemplateNameList"
+                        @change="changeBarcodeTemplate"
+                    ></select-barcode-template>
                 </a-form-item>
                 <a-form-item label="EAN13">{{ getCodeEAN13Msg() }}</a-form-item>
                 <a-form-item label="Code">
@@ -47,18 +48,9 @@
                             :template="currentBarcodeTemplate"
                             :data="getBarcodeData"
                         ></barcode-print-field>
-                        <!--                        <barcode-->
-                        <!--                            id="print"-->
-                        <!--                            :tovarName="getCodeEAN13().tovarname"-->
-                        <!--                            :codeean="code"-->
-                        <!--                            :value="getCodeDM().code"-->
-                        <!--                            :font-size="fontSize"-->
-                        <!--                            :font-width="fontWeight"-->
-                        <!--                        ></barcode>-->
                         <a-button type="primary" @click="printBarcode"
-                        >Print
-                        </a-button
-                        >
+                            >Print
+                        </a-button>
                     </div>
                 </a-form-item>
             </a-form>
@@ -66,7 +58,7 @@
     </a-row>
 </template>
 <script>
-import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import printJS from "print-js";
 import Barcode from "./Search/Barcode";
 import PreviewBarcode from "./Search/PreviewBarcode";
@@ -74,7 +66,6 @@ import SelectBarcodeTemplate from "./SelectBarcodeTemplate";
 import defaultTemplate from "./BarcodesTemplate/default";
 import newTemplate from "./BarcodesTemplate/new";
 import BarcodePrintField from "./BarcodePrintField";
-
 
 const defaultTemplatePrintConfig = {
     printable: "print",
@@ -89,7 +80,7 @@ const defaultTemplatePrintConfig = {
           *{
           font-size: 11pt;
           }
-          }`,
+          }`
 };
 
 const newTemplatePrintConfig = {
@@ -108,37 +99,40 @@ const newTemplatePrintConfig = {
           img {
             float: right;
           }
-          }`,
+          }`
 };
 
 export default {
     name: "Search",
     data() {
         return {
-            barcodeTemplateNameList: ['old(58*40)', 'new(58*80)'],
+            barcodeTemplateNameList: ["old(58*40)", "new(58*80)"],
             barcodeTemplateList: [defaultTemplate, newTemplate],
-            barcodeTemplatePrintConfigList: [defaultTemplatePrintConfig, newTemplatePrintConfig],
+            barcodeTemplatePrintConfigList: [
+                defaultTemplatePrintConfig,
+                newTemplatePrintConfig
+            ],
             currentBarcodeTemplate: defaultTemplate,
             currentPrintConfig: defaultTemplatePrintConfig,
             formCol: {
                 label: {
-                    span: 3,
+                    span: 3
                 },
                 wrapper: {
-                    span: 20,
-                },
+                    span: 20
+                }
             },
             States: {
                 EAN13: {
                     EAN13Msg: "",
                     EAN13: null,
                     prefix: "EAN13",
-                    help: "Input code EAN13",
+                    help: "Input code EAN13"
                 },
                 DM: {
                     codedm: null,
-                    help: "Input code EAN13",
-                },
+                    help: "Input code EAN13"
+                }
             },
             previewBarcodeVisible: false,
             user: null,
@@ -152,12 +146,12 @@ export default {
             help: "",
             selectCargo: null,
             fontSize: 8,
-            fontWeight: "normal",
+            fontWeight: "normal"
         };
     },
-    provide: function () {
+    provide: function() {
         return {
-            hidePreviewBarcode: this.hidePreviewBarcode,
+            hidePreviewBarcode: this.hidePreviewBarcode
         };
     },
     components: {
@@ -169,7 +163,7 @@ export default {
     beforeMount() {
         this.user = this.getUser;
         this.selectCargo = this.getSelectedCargo;
-        this.form = this.$form.createForm(this, {name: "search"});
+        this.form = this.$form.createForm(this, { name: "search" });
     },
     mounted() {
         this.Init();
@@ -178,27 +172,36 @@ export default {
     computed: {
         ...mapGetters(["getUser", "getSelectedCargo"]),
         getBarcodeData() {
+            const code = this.getCodeDM()?.code;
+            const invisebleChar = String.fromCharCode(29);
+            const value =
+                code.slice(0, 31) +
+                invisebleChar +
+                code.slice(32, 37) +
+                invisebleChar +
+                code.slice(37);
+            console.log("value -> ", value);
             return {
-                tovarName: this.getCodeEAN13().tovarname,
-                description: this.getCodeEAN13().description,
-                hasEAC: this.getCodeEAN13().Certification ? true : false,
-                innerCode: this.getCodeEAN13().innerCode,
+                value,
+                tovarName: this.getCodeEAN13()?.tovarname,
+                description: this.getCodeEAN13()?.description,
+                hasEAC: !!this.getCodeEAN13()?.Certification,
+                innerCode: this.getCodeEAN13()?.innerCode,
                 codeean: this.code,
-                value: this.getCodeDM().code,
                 "font-size": this.fontSize,
                 "font-width": this.fontWeight
-            }
+            };
         },
         getExternalsNumbers() {
             if (this.user.company.codeean13) {
-                const defaultCargo = [{text: "Нет", value: "-1"}];
+                const defaultCargo = [{ text: "Нет", value: "-1" }];
                 for (const ean of this.user.company.codeean13) {
-                    for (const {number: text, id: value} of ean.cargo) {
-                        defaultCargo.push({text, value: value.toString()});
+                    for (const { number: text, id: value } of ean.cargo) {
+                        defaultCargo.push({ text, value: value.toString() });
                     }
                 }
-                const uniqueArray = (a) =>
-                    [...new Set(a.map((o) => JSON.stringify(o)))].map((s) =>
+                const uniqueArray = a =>
+                    [...new Set(a.map(o => JSON.stringify(o)))].map(s =>
                         JSON.parse(s)
                     );
                 return uniqueArray(defaultCargo);
@@ -209,24 +212,28 @@ export default {
             return (
                 this.user.company.external !== 0 || this.selectCargo !== null
             );
-        },
+        }
     },
     watch: {
         selectCargo() {
             this.updateSelectedCargo(this.selectCargo);
-        },
+        }
     },
     methods: {
         ...mapActions([
             "searchCodeEan13",
             "searchCodeDMByCode",
             "searchCodeDM",
-            "updateSelectedCargo",
+            "updateSelectedCargo"
         ]),
         changeBarcodeTemplate(templateIndex) {
             // console.log('templateName -> ', templateIndex);
-            this.currentBarcodeTemplate = this.barcodeTemplateList[templateIndex];
-            this.currentPrintConfig = this.barcodeTemplatePrintConfigList[templateIndex];
+            this.currentBarcodeTemplate = this.barcodeTemplateList[
+                templateIndex
+            ];
+            this.currentPrintConfig = this.barcodeTemplatePrintConfigList[
+                templateIndex
+            ];
         },
         printBarcode() {
             printJS(this.currentPrintConfig);
@@ -339,7 +346,7 @@ export default {
                 this.eqState("EAN13")
             ) {
                 this.hideBarcode();
-                this.findCodeEan13(this.getCode()).then((res) => {
+                this.findCodeEan13(this.getCode()).then(res => {
                     this.previewBarcode();
                     if (this.getToPrint()) {
                         this.printBarcode();
@@ -354,7 +361,7 @@ export default {
                 console.log(this.checkDM(this.getCode()));
 
                 if (this.checkDM(this.getCode()))
-                    this.findCodeDm(this.getCode()).then((res) => {
+                    this.findCodeDm(this.getCode()).then(res => {
                         this.setNextStep();
                         this.hideBarcode();
                     });
@@ -385,7 +392,7 @@ export default {
             return new Promise((resolve, reject) => {
                 try {
                     this.searchCodeDMByCode(val).then(
-                        (result) => {
+                        result => {
                             let msg;
                             let res;
                             if (
@@ -410,7 +417,7 @@ export default {
                             //   this.resultMsg = msg;
                             resolve();
                         },
-                        (res) => {
+                        res => {
                             reject();
                         }
                     );
@@ -470,7 +477,7 @@ export default {
             try {
                 const result = await this.searchCodeEan13({
                     code,
-                    cargo_id: this.selectCargo,
+                    cargo_id: this.selectCargo
                 });
 
                 this.setCodeEAN13(result);
@@ -491,15 +498,15 @@ export default {
             this.toPrint = val;
         },
 
-        changePrint({target}) {
+        changePrint({ target }) {
             //   this.toPrint = target.checked;
             this.setToPrint(target.checked);
         },
         submit(e) {
             e.preventDefault();
             // console.log();
-        },
-    },
+        }
+    }
 };
 </script>
 <style>

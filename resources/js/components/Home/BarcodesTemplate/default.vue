@@ -1,5 +1,9 @@
 <template>
-    <div :key="Math.random()" style="font-size:8pt;  height: 57mm; padding-top: 5px" class="new-page">
+    <div
+        :key="Math.random()"
+        style="font-size:8pt;  height: 57mm; padding-top: 5px"
+        class="new-page"
+    >
         {{ this.codeean }}
         <table width="500">
             <tr>
@@ -28,16 +32,14 @@
 </template>
 
 <script>
-
 import { mapActions, mapGetters } from "vuex";
 import bwipjs from "bwip-js";
 export default {
     props: {
         data: {
-          type: Object,
-          requred: true,
-        },
-
+            type: Object,
+            requred: true
+        }
     },
     data: function() {
         return {
@@ -47,7 +49,7 @@ export default {
             value: "",
             tovarName: "",
             fontWidth: "",
-            fontSize: "",
+            fontSize: ""
         };
     },
     updated() {
@@ -59,12 +61,18 @@ export default {
     methods: {
         ...mapActions(["getBarcode"]),
         init() {
-            const {codeean, value, tovarName, fontWidth, fontSize} = this.data;
+            const {
+                codeean,
+                value,
+                tovarName,
+                fontWidth,
+                fontSize
+            } = this.data;
             this.codeean = codeean;
-            this.value = value
-            this.tovarName = tovarName
-            this.fontWidth = fontWidth
-            this.fontSize = fontSize
+            this.value = value;
+            this.tovarName = tovarName;
+            this.fontWidth = fontWidth;
+            this.fontSize = fontSize;
 
             if (this.value === null || this.tovarName === null) return;
             this.setCode31();
@@ -75,6 +83,9 @@ export default {
                 "(" + this.value.slice(0, 2) + ")" + this.value.slice(2, 15);
             this.code16 = this.value.slice(15, 31);
         },
+        /**
+         * @param {String} value
+         **/
         generateBarcode(value) {
             try {
                 bwipjs.toCanvas(this.$refs.barcode, {
