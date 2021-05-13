@@ -4,7 +4,8 @@
             <barcode-print-field
                 :key="Math.random()"
                 :template="barcodeTemplate"
-                :data="convertToTemplateData(item)">
+                :data="convertToTemplateData(item)"
+            >
             </barcode-print-field>
         </div>
     </div>
@@ -17,32 +18,32 @@ import BarcodePrintField from "../BarcodePrintField";
 export default {
     components: {
         BarcodePrintField,
-        Barcode
+        Barcode,
     },
     props: {
         barcodeTemplate: {
-            type: Object
+            type: Object,
         },
         codeean: {
             type: String,
-            default: ""
+            default: "",
         },
         codes: {
             type: Array,
-            required: true
+            required: true,
         },
         tovarName: {
             type: String,
-            required: true
+            required: true,
         },
         description: {
-            type: String
+            type: String,
         },
         hasEAC: {
-            type: Boolean
+            type: Boolean,
         },
         innerCode: {
-            type: String
+            type: String,
         },
     },
     mounted() {
@@ -52,23 +53,32 @@ export default {
     },
     methods: {
         convertToTemplateData(item) {
+            const invisebleChar = String.fromCharCode(29);
+
+            const code = item.code;
+
+            const value =
+                code.slice(0, 31) +
+                invisebleChar +
+                code.slice(32, 37) +
+                invisebleChar +
+                code.slice(37);
             const convertedToData = {
+                value,
                 codeean: this.codeean,
-                value: item.code,
                 tovarName: this.tovarName,
                 description: this.description,
                 hasEAC: this.hasEAC,
-                innerCode: this.innerCode
-            }
+                innerCode: this.innerCode,
+            };
             // console.log('this.description -> ', this.description)
             // console.log('this.innerCode -> ', this.innerCode)
             // console.log('this.hasEAC -> ', this.hasEAC)
             // console.log('convertedToData -> ', convertedToData);
             return convertedToData;
-        }
-    }
+        },
+    },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
