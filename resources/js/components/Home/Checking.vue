@@ -52,6 +52,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import {pruneDatamatrixCode} from "../../app";
 
 export default {
     name: "Checking",
@@ -109,9 +110,11 @@ export default {
         },
         async endInputDM() {
             try {
+
+                const pruneCode = pruneDatamatrixCode(this.codedm);
                 const res = await this.checkingDMCode({
                     codeean_id: this.codeeanId,
-                    codedm: this.codedm
+                    codedm: pruneCode
                 });
                 console.log(res);
                 if (!res) {

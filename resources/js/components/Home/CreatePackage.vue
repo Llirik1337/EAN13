@@ -39,6 +39,7 @@
 import Barcode from "./CreatePackage/Barcode";
 import printJS from "print-js";
 import { mapActions } from "vuex";
+import {pruneDatamatrixCode} from "../../app";
 export default {
   name: "CreatePackage",
   data: function() {
@@ -168,7 +169,7 @@ export default {
       return this.data;
     },
     getCode() {
-      return this.code.slice(0,31);
+      return pruneDatamatrixCode(this.code).slice(0,31);
     },
     addData(code) {
       this.getData().push({
@@ -187,7 +188,8 @@ export default {
       if (this.getCodedm(this.getCode())) {
         this.$message.warning("Is datamatrix code exist in this package");
       } else {
-        this.addData(this.getCode().slice(0,31));
+        const code = this.getCode();
+        this.addData(code);
         this.selectInput();
       }
     },

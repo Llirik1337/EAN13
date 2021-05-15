@@ -34,6 +34,17 @@ Vue.config.productionTip = false;
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+export const invisibleChar = String.fromCharCode(29);
+
+/**
+ * Prune datamatrix code of invisible symbols
+ * @param {String} code
+ * @return {String}
+ */
+export const pruneDatamatrixCode = (code) => {
+    return code.replace(invisibleChar, "");
+}
+
 const app = new Vue({
     el: '#app',
     render: (h) => h(App),

@@ -66,6 +66,9 @@ import SelectBarcodeTemplate from "./SelectBarcodeTemplate";
 import defaultTemplate from "./BarcodesTemplate/default";
 import newTemplate from "./BarcodesTemplate/new";
 import BarcodePrintField from "./BarcodePrintField";
+import {invisibleChar, pruneDatamatrixCode} from "../../app";
+
+
 
 const defaultTemplatePrintConfig = {
     printable: "print",
@@ -217,7 +220,11 @@ export default {
     watch: {
         selectCargo() {
             this.updateSelectedCargo(this.selectCargo);
+        },
+        code() {
+
         }
+
     },
     methods: {
         ...mapActions([
@@ -360,8 +367,14 @@ export default {
 
                 console.log(this.checkDM(this.getCode()));
 
-                if (this.checkDM(this.getCode()))
-                    this.findCodeDm(this.getCode()).then(res => {
+              /**
+               * Code of Datamatrix
+               * @type {String}
+               */
+                const code = this.getCode();
+                const pruneCode = pruneDatamatrixCode(code);
+                if (this.checkDM(pruneCode))
+                    this.findCodeDm(pruneCode).then(res => {
                         this.setNextStep();
                         this.hideBarcode();
                     });
