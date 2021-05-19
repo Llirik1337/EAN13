@@ -60,7 +60,7 @@ export default {
             const value =
                 code.slice(0, 31) +
                 invisebleChar +
-                code.slice(32, 37) +
+                code.slice(31, 37) +
                 invisebleChar +
                 code.slice(37);
             const convertedToData = {
